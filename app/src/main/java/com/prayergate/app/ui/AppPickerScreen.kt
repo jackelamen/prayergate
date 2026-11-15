@@ -122,7 +122,7 @@ fun AppPickerScreen() {
     Column(Modifier.fillMaxSize().readableWidth().padding(horizontal = 28.dp)) {
         Spacer(Modifier.height(36.dp))
         Text(
-            withAccentFullStop(stringResource(R.string.apps_title)),
+            stringResource(R.string.apps_title),
             style = MaterialTheme.typography.headlineLarge,
             color = MaterialTheme.colorScheme.onBackground,
         )

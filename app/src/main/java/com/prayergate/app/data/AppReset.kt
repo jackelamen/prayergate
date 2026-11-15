@@ -12,7 +12,7 @@ import com.prayergate.app.ui.PrayerGateWidget
  * "Reset PrayerGate" in Settings: deletes everything PrayerGate has stored and
  * sends the user back to the start of setup.
  *
- * Deleted: chosen apps, every answer and trigger, review list, streak and
+ * Deleted: chosen apps, every prayer and pause, saved prayers, streak and
  * stats, all settings, cooldowns and time-check clocks.
  * Not changed: permissions the user granted in Android settings. An app
  * cannot switch those off itself; setup simply skips the ones already on.

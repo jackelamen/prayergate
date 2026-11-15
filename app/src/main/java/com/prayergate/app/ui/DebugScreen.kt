@@ -36,7 +36,7 @@ import java.util.Locale
 /**
  * The hidden debug screen (Settings > tap the version number 7 times).
  *
- * It answers one question: how fast does each engine show the question?
+ * It answers one question: how fast does each engine show the prayer?
  * For each engine it shows the number of triggers, the median delay and
  * the 90th-percentile delay, followed by the raw log.
  */
@@ -57,7 +57,7 @@ fun DebugScreen(onBack: () -> Unit) {
     ) {
         item {
             Text(
-                withAccentFullStop(stringResource(R.string.debug_title)),
+                stringResource(R.string.debug_title),
                 style = MaterialTheme.typography.headlineLarge,
                 color = MaterialTheme.colorScheme.onBackground,
             )
@@ -129,11 +129,7 @@ private fun SummaryRow(label: String, value: String) {
 @Composable
 private fun LogLine(log: TriggerLog) {
     val time = SimpleDateFormat("MM-dd HH:mm:ss", Locale.US).format(Date(log.openedAt))
-    val result = when (log.correct) {
-        true -> stringResource(R.string.debug_right)
-        false -> stringResource(R.string.debug_wrong)
-        null -> stringResource(R.string.debug_no_answer)
-    }
+    val result = stringResource(if (log.prayed == true) R.string.debug_prayed else R.string.debug_not_prayed)
     Column(Modifier.fillMaxWidth().padding(vertical = 6.dp)) {
         Text(
             "$time  ${log.packageName}",

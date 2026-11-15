@@ -26,50 +26,48 @@ import com.prayergate.app.R
 /*
  * THE DESIGN SYSTEM (read this before changing any colour or font)
  *
- * The idea: fine stationery. Paper, ink, and one colour of ink for emphasis.
- * The app should feel like a well-made dictionary, not like a game.
+ * The idea: "Watch and pray" (Matthew 26:41), said in the olive garden of
+ * Gethsemane. PrayerGate is a small lamp kept lit before you scroll. The one
+ * feeling it should leave is watchful calm: steady, quiet, unhurried.
  *
  * COLOUR - four roles, nothing else:
- *   Paper  - backgrounds. White cards sit on it with a soft shadow.
+ *   Paper  - backgrounds of the tool screens (Settings, Apps, Saved). A cool
+ *            grey-green, not cream. White cards sit on it with a soft shadow.
  *   Ink    - all text, and the one main button on each screen.
- *   Lapis  - the single accent. It means "yes": the right answer, a day you
- *            practised, a selected option, the streak. It is also the colour
- *            of the full stop. Use it sparingly or it loses its meaning.
- *   Citron - the spark. It only ever appears on a lapis ground (see
- *            ui/Ground.kt), where it takes over the accent's job: the right
- *            answer, the full stop, the confetti. On paper it would be
- *            unreadable, so it is never used there.
- *   There is deliberately no red and no green. A wrong answer is struck
- *   through, the way you would cross out a word on paper.
+ *   Olive  - the single accent on paper. It means "yes": a day you prayed, a
+ *            selected option, the streak. Use it sparingly.
+ *   Gold   - lamp oil. It only ever appears on the olive ground (see
+ *            ui/Ground.kt), and only as the reward: the Amen button filling
+ *            as you hold it, and the flame's glow when you finish. On paper it
+ *            would be unreadable, so it is never used there.
+ *   There is deliberately no red and no green "success" colour.
  *
- * THE FULL STOP - the app's signature:
- *   A full stop is the punctuation mark for a pause, which is what PrayerGate
- *   is. The dot appears on the question screen (the only thing that
- *   breathes), in the app icon, under the selected tab, and at the end of
- *   real sentences such as the welcome line and the verdict. Plain titles
- *   ("Settings", "Review") get no full stop: stamped on every heading it
- *   would turn into a habit instead of a meaning.
+ * THE FLAME - the app's signature:
+ *   A small lamp flame. It breathes in the header of the prayer screen (the
+ *   only thing that moves there), glows gold when you say Amen, marks the
+ *   selected tab and is the app icon. One mark, used with meaning, not
+ *   stamped on every heading.
  *
  * TYPE - two families:
- *   Newsreader (serif)     - questions, headlines and numbers. Its italic is
- *                            used for small notes, like a dictionary does.
- *   Hanken Grotesk (sans)  - buttons, labels and body text.
+ *   EB Garamond (serif)      - the prayer, headlines and numbers. A prayer-book
+ *                              face. Its italic is for references and notes.
+ *   Instrument Sans (sans)   - buttons, labels and body text.
  *   Small labels are set in capitals with wide spacing (see SectionLabel).
  */
 
 // Paper and ink
-val Paper = Color(0xFFF6F5F1)
-val Ink = Color(0xFF101114)
-val InkSoft = Color(0xFF6C6D72)
-val Hairline = Color(0xFFE2E1DB)
+val Paper = Color(0xFFF2F3EF)
+val Ink = Color(0xFF151A14)
+val InkSoft = Color(0xFF656B62)
+val Hairline = Color(0xFFDDE0D8)
 
 // The accent on paper, and the ground of the hero screens
-val Lapis = Color(0xFF1E36C0)
-val LapisDeep = Color(0xFF111C7E)   // the bottom of the lapis gradient
-val LapisGlow = Color(0xFF3F5BF0)   // the giant full stop in the background
+val Olive = Color(0xFF3F5A2C)
+val OliveDeep = Color(0xFF1C2718)   // the bottom of the olive gradient
+val OliveGlow = Color(0xFF55703F)   // the large flame in the background
 
-// The spark: used only on top of lapis
-val Citron = Color(0xFFE4F45E)
+// The reward: used only on top of olive
+val Gold = Color(0xFFE8B84A)
 
 private val LightColors = lightColorScheme(
     primary = Ink,
@@ -78,40 +76,40 @@ private val LightColors = lightColorScheme(
     onBackground = Ink,
     surface = Color.White,
     onSurface = Ink,
-    surfaceVariant = Color(0xFFEAE9E3),
+    surfaceVariant = Color(0xFFE5E8E1),
     onSurfaceVariant = InkSoft,
-    outline = Color(0xFFCFCEC8),
+    outline = Color(0xFFC9CDC3),
     outlineVariant = Hairline,
     error = Ink,
 )
 
 private val DarkColors = darkColorScheme(
-    primary = Color(0xFFF3F2EE),
+    primary = Color(0xFFF0F2EC),
     onPrimary = Ink,
-    background = Color(0xFF0D0E11),
-    onBackground = Color(0xFFF3F2EE),
-    surface = Color(0xFF1A1B20),
-    onSurface = Color(0xFFF3F2EE),
-    surfaceVariant = Color(0xFF24252B),
-    onSurfaceVariant = Color(0xFF9A9BA3),
-    outline = Color(0xFF3A3B43),
-    outlineVariant = Color(0xFF26272D),
-    error = Color(0xFFF3F2EE),
+    background = Color(0xFF0E120D),
+    onBackground = Color(0xFFF0F2EC),
+    surface = Color(0xFF1A2018),
+    onSurface = Color(0xFFF0F2EC),
+    surfaceVariant = Color(0xFF242B22),
+    onSurfaceVariant = Color(0xFF9AA294),
+    outline = Color(0xFF3A4337),
+    outlineVariant = Color(0xFF262D24),
+    error = Color(0xFFF0F2EC),
 )
 
 /**
- * The colours of anything placed on a lapis ground: white text, a white
- * main button with ink text, and white cards. Used by LapisGround.
- * It is the same in light and dark mode: lapis is already dark.
+ * The colours of anything placed on the olive ground: white text, a white
+ * main button with ink text, and white cards. Used by OliveGround.
+ * It is the same in light and dark mode: olive is already dark.
  */
-val LapisColors = darkColorScheme(
+val OliveColors = darkColorScheme(
     primary = Color.White,
     onPrimary = Ink,
-    background = Color(0xFF2038C8),
+    background = Color(0xFF34482A),
     onBackground = Color.White,
     surface = Color.White,
     onSurface = Ink,
-    surfaceVariant = Color(0xFFEAE9E3),
+    surfaceVariant = Color(0xFFE5E8E1),
     onSurfaceVariant = InkSoft,
     outline = Color.White.copy(alpha = 0.45f),
     outlineVariant = Color.White.copy(alpha = 0.18f),
@@ -120,18 +118,17 @@ val LapisColors = darkColorScheme(
 /** The accent, and the colour of text placed on top of it. */
 data class AccentColors(val accent: Color, val onAccent: Color)
 
-private val LightAccent = AccentColors(accent = Lapis, onAccent = Color.White)
-private val DarkAccent = AccentColors(accent = Color(0xFF7B8FFF), onAccent = Color(0xFF0B1030))
+private val LightAccent = AccentColors(accent = Olive, onAccent = Color.White)
+private val DarkAccent = AccentColors(accent = Color(0xFFA9C48C), onAccent = Color(0xFF142010))
 
-/** On lapis the accent is citron. */
-val LapisAccent = AccentColors(accent = Citron, onAccent = Ink)
+/** On the olive ground the accent is gold. */
+val OliveAccent = AccentColors(accent = Gold, onAccent = Ink)
 
 val LocalAccent = staticCompositionLocalOf { LightAccent }
 
 /*
  * The fonts are "variable": one file holds every weight. We ask each file
- * for the exact weights we need. "opsz" (optical size) picks letter shapes
- * drawn for big headlines (72) or for normal reading sizes (26).
+ * for the exact weights we need.
  */
 @OptIn(ExperimentalTextApi::class)
 private fun garamond(weight: Int, italic: Boolean = false) = Font(
@@ -148,21 +145,21 @@ private fun instrument(weight: Int) = Font(
     variationSettings = FontVariation.Settings(FontVariation.weight(weight)),
 )
 
-/** Newsreader drawn for large sizes: headlines and the big streak number. */
-val SerifDisplay = FontFamily(garamond(300), garamond(400), garamond(300, italic = true))
+/** EB Garamond for large sizes: headlines and the big streak number. */
+val SerifDisplay = FontFamily(garamond(400), garamond(500), garamond(400, italic = true))
 
-/** Newsreader drawn for reading sizes: the question, values, italic notes. */
+/** EB Garamond for reading sizes: the prayer, values, italic notes. */
 val Serif = FontFamily(garamond(400), garamond(500), garamond(400, italic = true))
 
 val Sans = FontFamily(instrument(400), instrument(500), instrument(600))
 
 private val AppTypography = Typography(
     // The streak number
-    displayLarge = TextStyle(fontFamily = SerifDisplay, fontWeight = FontWeight(300), fontSize = 120.sp, lineHeight = 120.sp, letterSpacing = (-3).sp),
-    // Screen titles and the verdict ("Correct.")
-    headlineLarge = TextStyle(fontFamily = SerifDisplay, fontWeight = FontWeight(400), fontSize = 38.sp, lineHeight = 44.sp, letterSpacing = (-0.6).sp),
-    // The question itself
-    headlineMedium = TextStyle(fontFamily = Serif, fontWeight = FontWeight(400), fontSize = 28.sp, lineHeight = 37.sp, letterSpacing = (-0.2).sp),
+    displayLarge = TextStyle(fontFamily = SerifDisplay, fontWeight = FontWeight(400), fontSize = 120.sp, lineHeight = 120.sp, letterSpacing = (-2).sp),
+    // Screen titles and "Amen"
+    headlineLarge = TextStyle(fontFamily = SerifDisplay, fontWeight = FontWeight(400), fontSize = 40.sp, lineHeight = 46.sp, letterSpacing = (-0.4).sp),
+    // The prayer itself
+    headlineMedium = TextStyle(fontFamily = Serif, fontWeight = FontWeight(400), fontSize = 27.sp, lineHeight = 37.sp, letterSpacing = 0.sp),
     // Numbers in lists
     titleLarge = TextStyle(fontFamily = Serif, fontWeight = FontWeight(400), fontSize = 24.sp, lineHeight = 30.sp),
     titleMedium = TextStyle(fontFamily = Sans, fontWeight = FontWeight(600), fontSize = 16.sp, lineHeight = 22.sp),
@@ -172,8 +169,8 @@ private val AppTypography = Typography(
     labelLarge = TextStyle(fontFamily = Sans, fontWeight = FontWeight(600), fontSize = 15.sp, lineHeight = 20.sp, letterSpacing = 0.1.sp),
     // Small capital labels (the text is put in capitals by SectionLabel)
     labelMedium = TextStyle(fontFamily = Sans, fontWeight = FontWeight(600), fontSize = 11.sp, lineHeight = 16.sp, letterSpacing = 1.0.sp),
-    // Italic notes, as in a dictionary
-    labelSmall = TextStyle(fontFamily = Serif, fontStyle = FontStyle.Italic, fontWeight = FontWeight(400), fontSize = 17.sp, lineHeight = 24.sp),
+    // Italic notes and Bible references
+    labelSmall = TextStyle(fontFamily = Serif, fontStyle = FontStyle.Italic, fontWeight = FontWeight(400), fontSize = 18.sp, lineHeight = 25.sp),
 )
 
 private val AppShapes = Shapes(
@@ -183,7 +180,7 @@ private val AppShapes = Shapes(
 )
 
 /**
- * The same type scale, adjusted for Korean. Newsreader and Hanken Grotesk have
+ * The same type scale, adjusted for Korean. EB Garamond and Instrument Sans have
  * no Korean letters, so Android draws Korean with the phone's own Korean font.
  * That font has no italic (a slanted copy looks wrong), and Korean reads best
  * without the tight or wide letter spacing used for English.
@@ -191,7 +188,8 @@ private val AppShapes = Shapes(
 private val KoreanTypography = AppTypography.copy(
     displayLarge = AppTypography.displayLarge.copy(letterSpacing = 0.sp),
     headlineLarge = AppTypography.headlineLarge.copy(letterSpacing = 0.sp),
-    headlineMedium = AppTypography.headlineMedium.copy(letterSpacing = 0.sp),
+    // Korean sentences are longer on screen than the English, so the prayer is a little smaller.
+    headlineMedium = AppTypography.headlineMedium.copy(letterSpacing = 0.sp, fontSize = 23.sp, lineHeight = 36.sp),
     labelMedium = AppTypography.labelMedium.copy(letterSpacing = 0.3.sp, fontSize = 12.5.sp, lineHeight = 18.sp),
     labelSmall = AppTypography.labelSmall.copy(fontStyle = FontStyle.Normal, fontFamily = Sans, fontSize = 15.sp, lineHeight = 22.sp),
 )

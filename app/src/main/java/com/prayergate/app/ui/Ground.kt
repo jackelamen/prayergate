@@ -17,9 +17,9 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.text.TextStyle
@@ -31,22 +31,22 @@ import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.view.WindowCompat
-import com.prayergate.app.ui.theme.LapisAccent
-import com.prayergate.app.ui.theme.LapisColors
-import com.prayergate.app.ui.theme.LapisDeep
-import com.prayergate.app.ui.theme.LapisGlow
+import com.prayergate.app.ui.theme.OliveAccent
+import com.prayergate.app.ui.theme.OliveColors
+import com.prayergate.app.ui.theme.OliveDeep
+import com.prayergate.app.ui.theme.OliveGlow
 import com.prayergate.app.ui.theme.LocalAccent
 import com.prayergate.app.ui.theme.SerifDisplay
 
 /*
- * THE LAPIS GROUND: where PrayerGate shows its character.
+ * THE OLIVE GROUND: where PrayerGate shows its character.
  *
- * Most screens are quiet paper. The moments that matter (the question, the
- * welcome, the streak) sit on a deep lapis blue instead, with two pieces of
- * typographic art behind the content:
+ * Most screens are quiet paper. The moments that matter (the prayer, the
+ * welcome, the streak) sit on a deep olive instead, with two pieces of art
+ * behind the content:
  *
- *   1. A giant full stop, so big that only part of it fits on the screen.
- *      It is the app's signature dot, scaled up. It does not move.
+ *   1. A giant flame, so big that only its upper part fits on the screen.
+ *      It is the app's signature mark, scaled up. It does not move.
  *   2. One large, pale italic word (see GhostWord). It is always shown
  *      whole, lined up with the text, and never sits behind other text.
  *
@@ -55,9 +55,9 @@ import com.prayergate.app.ui.theme.SerifDisplay
  */
 
 /**
- * Draws the lapis background art and switches the colours of everything
+ * Draws the olive background art and switches the colours of everything
  * inside it: text becomes white, the main button becomes white, and the
- * accent becomes citron (lapis on lapis would be invisible).
+ * accent becomes gold (olive on olive would be invisible).
  *
  * @param word        a large pale word drawn near the top, or null for none.
  *                    Leave the area under it empty.
@@ -65,7 +65,7 @@ import com.prayergate.app.ui.theme.SerifDisplay
  *                    the status bar icons light). Use false for a card.
  */
 @Composable
-fun LapisGround(
+fun OliveGround(
     modifier: Modifier = Modifier,
     word: String? = null,
     wordTop: Dp = 84.dp,
@@ -77,22 +77,26 @@ fun LapisGround(
     Box(
         modifier
             .clipToBounds()
-            // A gentle fall-off from blue to a deeper blue gives the flat colour some depth.
-            .background(Brush.verticalGradient(listOf(LapisColors.background, LapisDeep))),
+            // A gentle fall-off from olive to a deeper olive gives the flat colour some depth.
+            .background(Brush.verticalGradient(listOf(OliveColors.background, OliveDeep))),
     ) {
         Canvas(Modifier.matchParentSize()) {
-            // The giant full stop sits low on the right, mostly off the screen.
-            // It stays still: only the small dot in the header breathes, so there is one calm motion, not two.
-            val radius = size.width * 0.63f
-            val center = Offset(size.width * 1.02f, size.height - size.width * 0.18f)
-            drawCircle(
-                brush = Brush.radialGradient(
-                    colors = listOf(LapisGlow.copy(alpha = 0.55f), LapisGlow.copy(alpha = 0.16f)),
-                    center = center,
-                    radius = radius,
+            // The giant flame rises from below the bottom edge, on the right.
+            // Its tip and upper body show; its base is cut off by the edge, so
+            // it reads as a lamp flame seen close up. It stays still: only the
+            // small flame in the header breathes, so there is one calm motion.
+            // Its size is capped by the height, so the tip shows on short
+            // grounds too (a card, a phone turned sideways).
+            val width = minOf(size.width * 0.8f, size.height * 0.55f)
+            val left = size.width - width * 0.85f
+            val top = size.height - width * 1.5f * 0.7f
+            drawPath(
+                path = flamePath(left, top, width),
+                brush = Brush.verticalGradient(
+                    colors = listOf(OliveGlow.copy(alpha = 0.55f), OliveGlow.copy(alpha = 0.12f)),
+                    startY = top,
+                    endY = top + width * 1.5f,
                 ),
-                radius = radius,
-                center = center,
             )
         }
 
@@ -105,16 +109,16 @@ fun LapisGround(
             )
         }
 
-        // Everything in front uses the "on lapis" colours.
-        CompositionLocalProvider(LocalAccent provides LapisAccent) {
-            MaterialTheme(colorScheme = LapisColors, content = { content() })
+        // Everything in front uses the "on olive" colours.
+        CompositionLocalProvider(LocalAccent provides OliveAccent) {
+            MaterialTheme(colorScheme = OliveColors, content = { content() })
         }
     }
 }
 
 /**
  * A large, pale, light italic word used as a piece of typography rather
- * than as something to read closely. Only use it on a lapis ground.
+ * than as something to read closely. Only use it on the olive ground.
  */
 @Composable
 fun GhostWord(text: String, fontSize: TextUnit, modifier: Modifier = Modifier, fitWidth: Boolean = false) {
@@ -124,21 +128,27 @@ fun GhostWord(text: String, fontSize: TextUnit, modifier: Modifier = Modifier, f
         // push against the edge.
         BoxWithConstraints(modifier) {
             val density = LocalDensity.current
-            val maxSize = with(density) { maxWidth.toSp() } / (text.length * 0.47f).coerceAtLeast(1f)
+            val perChar = if (text.any { it in '\uAC00'..'\uD7A3' }) 0.95f else 0.47f
+            val maxSize = with(density) { maxWidth.toSp() } / (text.length * perChar).coerceAtLeast(1f)
             val size = if (maxSize.value < fontSize.value) maxSize else fontSize
             GhostWord(text, size)
         }
         return
     }
+    // Korean has no true italic (Android would slant the letters), so Korean
+    // stays upright. Upright Hangul is much heavier than a light Latin italic,
+    // so it is drawn smaller to stay in the background.
+    val korean = LocalConfiguration.current.locales[0].language == "ko"
+    val size = if (korean) fontSize * 0.62f else fontSize
     Text(
         text = text,
         style = TextStyle(
             fontFamily = SerifDisplay,
-            fontStyle = FontStyle.Italic,
+            fontStyle = if (korean) FontStyle.Normal else FontStyle.Italic,
             fontWeight = FontWeight(300),
-            fontSize = fontSize,
-            lineHeight = fontSize,
-            letterSpacing = (-0.03).em,
+            fontSize = size,
+            lineHeight = size,
+            letterSpacing = if (korean) 0.em else (-0.03).em,
         ),
         color = Color.White.copy(alpha = 0.3f),
         maxLines = 1,
@@ -149,7 +159,7 @@ fun GhostWord(text: String, fontSize: TextUnit, modifier: Modifier = Modifier, f
 
 /**
  * Makes the status bar icons (clock, battery) light while a full-screen
- * lapis ground is showing, and puts them back afterwards.
+ * olive ground is showing, and puts them back afterwards.
  */
 @Composable
 private fun LightStatusBarIcons() {

@@ -54,10 +54,10 @@
             </intent-filter>
         </activity>
 
-        <!-- The full-screen pause with one question. It lives in its own task
+        <!-- The full-screen pause with one prayer. It lives in its own task
              (taskAffinity="") and is hidden from the recent apps list. -->
         <activity
-            android:name=".ui.QuestionActivity"
+            android:name=".ui.PrayerActivity"
             android:excludeFromRecents="true"
             android:exported="false"
             android:launchMode="singleTask"
@@ -87,7 +87,7 @@
                 android:resource="@xml/accessibility_service_config" />
         </service>
 
-        <!-- The home-screen widget: streak and today's question. -->
+        <!-- The home-screen widget: streak and today's prayer. -->
         <receiver
             android:name=".ui.PrayerGateWidget"
             android:exported="true"

@@ -12,10 +12,10 @@ import java.time.ZoneId
 
 /** The numbers shown on the Stats screen. */
 data class Stats(
-    val answered: Int,        // questions answered
-    val percentCorrect: Int,  // 0-100
+    val prayed: Int,          // prayers confirmed with Amen
+    val prayedThisWeek: Int,  // the same, last 7 days
     val closes: Int,          // times the user chose Close instead of Continue
-    val streakDays: Int,      // days in a row with at least one answer
+    val streakDays: Int,      // days in a row with at least one prayer
 )
 
 fun computeStats(
@@ -23,29 +23,27 @@ fun computeStats(
     today: LocalDate = LocalDate.now(),
     zone: ZoneId = ZoneId.systemDefault(),
 ): Stats {
-    val answeredLogs = logs.filter { it.correct != null }
-    val correct = answeredLogs.count { it.correct == true }
-    val percent = if (answeredLogs.isEmpty()) 0 else Math.round(correct * 100f / answeredLogs.size)
-
-    val days = answeredDays(logs, zone)
+    val prayedLogs = logs.filter { it.prayed == true }
+    val weekStart = today.minusDays(6).atStartOfDay(zone).toInstant().toEpochMilli()
+    val days = prayedDays(logs, zone)
 
     return Stats(
-        answered = answeredLogs.size,
-        percentCorrect = percent,
+        prayed = prayedLogs.size,
+        prayedThisWeek = prayedLogs.count { it.openedAt >= weekStart },
         closes = logs.count { it.action == TriggerLog.ACTION_CLOSE },
         streakDays = computeStreak(days, today),
     )
 }
 
-/** The set of calendar days on which the user answered at least one question. */
-fun answeredDays(logs: List<TriggerLog>, zone: ZoneId = ZoneId.systemDefault()): Set<LocalDate> =
-    logs.filter { it.correct != null }
+/** The set of calendar days on which the user prayed at least once. */
+fun prayedDays(logs: List<TriggerLog>, zone: ZoneId = ZoneId.systemDefault()): Set<LocalDate> =
+    logs.filter { it.prayed == true }
         .map { Instant.ofEpochMilli(it.openedAt).atZone(zone).toLocalDate() }
         .toSet()
 
 /**
- * Counts how many days in a row the user has answered a question.
- * The streak is still alive if the last answer was yesterday
+ * Counts how many days in a row the user has prayed.
+ * The streak is still alive if the last prayer was yesterday
  * (today is not over yet), but it is 0 if a whole day was missed.
  */
 fun computeStreak(days: Set<LocalDate>, today: LocalDate): Int {
@@ -88,40 +86,6 @@ fun continueDelaySeconds(opensThisHour: Int): Int = when {
     opensThisHour >= 5 -> 10
     opensThisHour >= 3 -> 5
     else -> 0
-}
-
-/** A suggestion to change the difficulty (see [adviseDifficulty]). */
-data class DifficultyAdvice(
-    val suggested: Difficulty,
-    val percentCorrect: Int,
-    val moveUp: Boolean,
-)
-
-/** How many answers at the current level are needed before giving advice. */
-const val ADVICE_MIN_ANSWERS = 20
-
-/**
- * Looks at the last 7 days of answers at the [current] difficulty.
- *  - 85% or more correct: suggest the next level up.
- *  - 50% or less correct: suggest the level below.
- * Returns null when there are fewer than [ADVICE_MIN_ANSWERS] answers,
- * when the score is in between, or when there is no level to move to.
- */
-fun adviseDifficulty(logs: List<TriggerLog>, current: Difficulty, now: Long): DifficultyAdvice? {
-    val weekAgo = now - 7 * 24 * 60 * 60 * 1000L
-    val answers = logs.filter {
-        it.correct != null && it.openedAt >= weekAgo && difficultyOfId(it.questionId) == current
-    }
-    if (answers.size < ADVICE_MIN_ANSWERS) return null
-    val percent = Math.round(answers.count { it.correct == true } * 100f / answers.size)
-    val levels = Difficulty.entries
-    return when {
-        percent >= 85 && current != Difficulty.HARD ->
-            DifficultyAdvice(levels[current.ordinal + 1], percent, moveUp = true)
-        percent <= 50 && current != Difficulty.EASY ->
-            DifficultyAdvice(levels[current.ordinal - 1], percent, moveUp = false)
-        else -> null
-    }
 }
 
 /**

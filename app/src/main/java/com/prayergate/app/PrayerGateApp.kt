@@ -22,13 +22,13 @@ class PrayerGateApp : Application() {
     /** The Room database. "by lazy" means it is opened the first time it is used. */
     val database: AppDatabase by lazy { AppDatabase.create(this) }
 
-    /** The user's settings (difficulty, cooldown, engine...). */
+    /** The user's settings (themes, cooldown, engine...). */
     val settings: Settings by lazy { Settings(this) }
 
     /**
-     * One background thread for the question screen's database work.
+     * One background thread for the prayer screen's database work.
      * Jobs given to it run one at a time, in the order they were added,
-     * and they still finish after the question screen has closed.
+     * and they still finish after the prayer screen has closed.
      */
     val dbThread: ExecutorService = Executors.newSingleThreadExecutor()
 }

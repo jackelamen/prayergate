@@ -168,7 +168,7 @@ private fun StepLayout(
             modifier = Modifier.weight(1f).fillMaxWidth().verticalScroll(rememberScrollState()),
         ) {
             Text(
-                withAccentFullStop(title),
+                title,
                 style = MaterialTheme.typography.headlineLarge,
                 color = MaterialTheme.colorScheme.onBackground,
             )
@@ -181,7 +181,7 @@ private fun StepLayout(
                     verticalAlignment = Alignment.Top,
                     modifier = Modifier.fillMaxWidth().card().padding(18.dp),
                 ) {
-                    FullStop(Modifier.padding(top = 0.dp))
+                    Flame(Modifier.padding(top = 0.dp))
                     Spacer(Modifier.width(6.dp))
                     Text(how, style = MaterialTheme.typography.bodyLarge, color = MaterialTheme.colorScheme.onSurface)
                 }
@@ -310,7 +310,7 @@ private fun ReadyStep(onFinished: () -> Unit) {
     val selected by dao.observeAll().collectAsStateWithLifecycle(initialValue = emptyList())
     val firstApp = selected.firstOrNull()?.packageName?.let { appLabel(context, it) } ?: ""
 
-    LapisGround(Modifier.fillMaxSize()) {
+    OliveGround(Modifier.fillMaxSize()) {
         val softWhite = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.78f)
         Column(
             Modifier
@@ -323,10 +323,10 @@ private fun ReadyStep(onFinished: () -> Unit) {
                 verticalArrangement = Arrangement.Center,
                 modifier = Modifier.weight(1f).fillMaxWidth().verticalScroll(rememberScrollState()),
             ) {
-                FullStop(breathing = true)
+                Flame(breathing = true)
                 Spacer(Modifier.height(16.dp))
                 Text(
-                    withAccentFullStop(stringResource(R.string.ob_ready_title)),
+                    stringResource(R.string.ob_ready_title),
                     style = MaterialTheme.typography.headlineLarge,
                     color = MaterialTheme.colorScheme.onBackground,
                 )
@@ -386,12 +386,12 @@ private fun appLabel(context: Context, packageName: String): String = try {
 }
 
 /**
- * Step 0: the first thing a new user sees. One big sentence on the lapis
- * ground, ending in the citron full stop.
+ * Step 0: the first thing a new user sees. One big sentence on the olive
+ * ground, under the breathing flame.
  */
 @Composable
 private fun WelcomeStep(onNext: () -> Unit) {
-    LapisGround(Modifier.fillMaxSize()) {
+    OliveGround(Modifier.fillMaxSize()) {
         val softWhite = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.78f)
         Column(
             Modifier
@@ -402,7 +402,7 @@ private fun WelcomeStep(onNext: () -> Unit) {
         ) {
             // The name of the app, small, at the top.
             Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.height(64.dp)) {
-                FullStop(breathing = true)
+                Flame(breathing = true)
                 Spacer(Modifier.width(8.dp))
                 SectionLabel(stringResource(R.string.app_name), color = MaterialTheme.colorScheme.onBackground)
             }
@@ -419,7 +419,7 @@ private fun WelcomeStep(onNext: () -> Unit) {
                     val narrow = maxWidth < 360.dp
                     val korean = LocalConfiguration.current.locales[0].language == "ko"
                     Text(
-                        withAccentFullStop(stringResource(R.string.onboarding_title)),
+                        stringResource(R.string.onboarding_title),
                         style = MaterialTheme.typography.headlineLarge.copy(
                             fontSize = if (narrow) 40.sp else 50.sp,
                             lineHeight = if (narrow) 46.sp else 56.sp,

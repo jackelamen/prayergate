@@ -12,7 +12,7 @@ import androidx.core.content.ContextCompat
 import com.prayergate.app.PrayerGateApp
 import com.prayergate.app.data.Engine
 import com.prayergate.app.data.TriggerLog
-import com.prayergate.app.ui.QuestionActivity
+import com.prayergate.app.ui.PrayerActivity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.json.JSONObject
@@ -21,7 +21,7 @@ import org.json.JSONObject
  * The brain shared by both detection engines.
  *
  * Each engine has only one job: tell this object "package X is now in the
- * foreground". This object then decides whether to show a question.
+ * foreground". This object then decides whether to show a prayer.
  *
  * The rules for OPENING an app:
  *  1. Only react when the foreground app CHANGES. While the user stays in the
@@ -31,16 +31,16 @@ import org.json.JSONObject
  *     for the number of minutes chosen in Settings.
  *
  * The TIME CHECK (optional, set in Settings):
- *  While the user is in a chosen app (after answering its question), a clock
+ *  While the user is in a chosen app (after praying), a clock
  *  counts how long they stay. When it reaches the limit, they get another
- *  question. Leaving the app, or turning the screen off, pauses the clock.
+ *  prayer. Leaving the app, or turning the screen off, pauses the clock.
  *  A break shorter than one minute carries on where it left off; a longer
  *  break starts it from zero. See SessionTimer for the exact rules.
  *
  * MEMORY: cooldowns and the time-check clocks are saved on the phone after
  * every change (see saveState), so they survive Android restarting PrayerGate
  * in the background. Without this, a restart would forget a recent
- * "Continue" and pop up a question in the middle of using an app.
+ * "Continue" and pop up a prayer in the middle of using an app.
  */
 object GateController {
 
@@ -66,13 +66,13 @@ object GateController {
     /** Runs the time check on the main thread after a delay. */
     private val handler = Handler(Looper.getMainLooper())
 
-    /** Needed to open the question screen when the time is up. */
+    /** Needed to open the prayer screen when the time is up. */
     private var appContext: Context? = null
 
     /** The app whose clock is running right now, or null. */
     private var runningPackage: String? = null
 
-    /** The engine that last reported, so the time-check question is logged under it. */
+    /** The engine that last reported, so the time-check prayer is logged under it. */
     private var lastEngine = Engine.USAGE
 
     private val timeUp = Runnable { onTimeUp() }
@@ -149,7 +149,7 @@ object GateController {
      * Called by an engine when it sees an app come to the foreground.
      *
      * @param openedAt when the app came to the foreground (ms since 1970).
-     *                 Used later to measure how long the question took to appear.
+     *                 Used later to measure how long the prayer took to appear.
      */
     @Synchronized
     fun onForegroundApp(context: Context, packageName: String, openedAt: Long, engine: Engine) {
@@ -179,14 +179,14 @@ object GateController {
         // Whatever app was being timed has just been left: pause its clock.
         pauseClock(now)
 
-        // PrayerGate's own screens never trigger a question.
+        // PrayerGate's own screens never trigger a prayer.
         if (packageName == context.packageName) return
 
         // Rule 2: not one of the chosen apps.
         if (packageName !in selectedPackages) return
 
         // Rule 3: still cooling down after a recent "Continue".
-        // No question, but the time check keeps counting.
+        // No prayer, but the time check keeps counting.
         val until = cooldownUntil[packageName] ?: 0L
         if (now < until) {
             resumeClock(packageName, now)
@@ -194,8 +194,8 @@ object GateController {
         }
 
         Log.d(TAG, "Trigger for $packageName via $engine")
-        timer.reset(packageName) // a question resets the time check
-        openQuestion(context, QuestionActivity.createIntent(context, packageName, openedAt, engine))
+        timer.reset(packageName) // a prayer resets the time check
+        openPrayer(context, PrayerActivity.createIntent(context, packageName, openedAt, engine))
     }
 
     /**
@@ -247,7 +247,7 @@ object GateController {
         runningPackage = null
     }
 
-    /** The timer ran out. If the user is still in the app, ask another question. */
+    /** The timer ran out. If the user is still in the app, ask another prayer. */
     @Synchronized
     private fun onTimeUp() {
         val packageName = runningPackage ?: return
@@ -257,14 +257,14 @@ object GateController {
 
         val now = System.currentTimeMillis()
         val minutesUsed = (timer.usedMs(packageName, now) / 60_000L).toInt().coerceAtLeast(1)
-        // The question resets the clock; "Continue" on it starts a fresh one.
+        // The prayer resets the clock; "Continue" on it starts a fresh one.
         runningPackage = null
         timer.reset(packageName)
         saveState()
         Log.d(TAG, "Time check for $packageName after $minutesUsed min")
-        openQuestion(
+        openPrayer(
             context,
-            QuestionActivity.createIntent(
+            PrayerActivity.createIntent(
                 context, packageName, now, lastEngine,
                 reason = TriggerLog.REASON_TIME_CHECK,
                 minutesUsed = minutesUsed,
@@ -313,12 +313,12 @@ object GateController {
         ContextCompat.registerReceiver(context, receiver, filter, ContextCompat.RECEIVER_NOT_EXPORTED)
     }
 
-    private fun openQuestion(context: Context, intent: Intent) {
+    private fun openPrayer(context: Context, intent: Intent) {
         try {
             context.startActivity(intent)
         } catch (e: Exception) {
             // Android refused to open the screen (usually a missing permission).
-            Log.w(TAG, "Could not open the question screen", e)
+            Log.w(TAG, "Could not open the prayer screen", e)
         }
     }
 }

@@ -37,7 +37,7 @@ fun DisclosureScreen(onAgree: () -> Unit, onDecline: () -> Unit) {
         Column(Modifier.weight(1f).fillMaxWidth().verticalScroll(rememberScrollState())) {
             Spacer(Modifier.height(24.dp))
             Text(
-                withAccentFullStop(stringResource(R.string.disclosure_title)),
+                stringResource(R.string.disclosure_title),
                 style = MaterialTheme.typography.headlineLarge,
                 color = MaterialTheme.colorScheme.onBackground,
             )

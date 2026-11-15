@@ -7,12 +7,13 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -50,8 +51,8 @@ import com.prayergate.app.ui.theme.LocalAccent
 import com.prayergate.app.ui.theme.PrayerGateTheme
 
 /**
- * The main window of the app. It holds every screen except the question
- * screen (that one is QuestionActivity, because it opens on top of other apps).
+ * The main window of the app. It holds every screen except the prayer
+ * screen (that one is PrayerActivity, because it opens on top of other apps).
  */
 class MainActivity : ComponentActivity() {
 
@@ -74,7 +75,7 @@ class MainActivity : ComponentActivity() {
 private enum class Screen { ONBOARDING, HOME, DISCLOSURE, DEBUG, MANUAL, LEGAL }
 
 /** The four tabs inside HOME. */
-private enum class Tab { APPS, REVIEW, STATS, SETTINGS }
+private enum class Tab { APPS, SAVED, STATS, SETTINGS }
 
 /**
  * Decides which screen is visible. Navigation here is just one variable:
@@ -181,7 +182,7 @@ private fun HomeScreen(
         ) { current ->
             when (current) {
                 Tab.APPS -> AppPickerScreen()
-                Tab.REVIEW -> ReviewScreen()
+                Tab.SAVED -> SavedScreen()
                 Tab.STATS -> StatsScreen()
                 Tab.SETTINGS -> SettingsScreen(onRequestAccessibility, onOpenDebug, onOpenManual, onOpenLegal, onReset)
             }
@@ -197,7 +198,7 @@ private fun HomeScreen(
         ) {
             Row(Modifier.readableWidth()) {
                 TabButton(stringResource(R.string.tab_apps), tab == Tab.APPS, Modifier.weight(1f)) { onTabChange(Tab.APPS) }
-                TabButton(stringResource(R.string.tab_review), tab == Tab.REVIEW, Modifier.weight(1f)) { onTabChange(Tab.REVIEW) }
+                TabButton(stringResource(R.string.tab_saved), tab == Tab.SAVED, Modifier.weight(1f)) { onTabChange(Tab.SAVED) }
                 TabButton(stringResource(R.string.tab_stats), tab == Tab.STATS, Modifier.weight(1f)) { onTabChange(Tab.STATS) }
                 TabButton(stringResource(R.string.tab_settings), tab == Tab.SETTINGS, Modifier.weight(1f)) { onTabChange(Tab.SETTINGS) }
             }
@@ -211,8 +212,9 @@ private fun TabButton(text: String, selected: Boolean, modifier: Modifier, onCli
         if (selected) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurfaceVariant,
         label = "tabColor",
     )
-    // The selected tab is marked by a small full stop that grows from nothing.
-    val dotSize by animateDpAsState(if (selected) 5.dp else 0.dp, label = "tabDot")
+    // The selected tab is marked by a small flame that grows from nothing.
+    val flame by animateFloatAsState(if (selected) 1f else 0f, label = "tabFlame")
+    val accent = LocalAccent.current.accent
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -222,8 +224,11 @@ private fun TabButton(text: String, selected: Boolean, modifier: Modifier, onCli
     ) {
         FitText(text.uppercase(), MaterialTheme.typography.labelMedium, color, minFontSize = 8.sp)
         Spacer(Modifier.height(7.dp))
-        Box(Modifier.height(5.dp), contentAlignment = Alignment.Center) {
-            Box(Modifier.size(dotSize).background(LocalAccent.current.accent, CircleShape))
+        Canvas(Modifier.size(width = 6.dp, height = 9.dp)) {
+            if (flame > 0f) {
+                val width = size.width * flame
+                drawPath(flamePath((size.width - width) / 2, size.height - width * 1.5f, width), accent)
+            }
         }
     }
 }

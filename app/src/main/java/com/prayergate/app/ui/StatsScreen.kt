@@ -46,14 +46,11 @@ import androidx.core.graphics.drawable.toBitmap
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.prayergate.app.R
 import com.prayergate.app.PrayerGateApp
-import com.prayergate.app.data.DifficultyAdvice
-import com.prayergate.app.data.Difficulty
-import com.prayergate.app.data.adviseDifficulty
 import com.prayergate.app.data.AppWeek
-import com.prayergate.app.data.answeredDays
+import com.prayergate.app.data.prayedDays
 import com.prayergate.app.data.weekByApp
 import com.prayergate.app.data.computeStats
-import com.prayergate.app.ui.theme.Lapis
+import com.prayergate.app.ui.theme.Olive
 import com.prayergate.app.ui.theme.LocalAccent
 import java.time.LocalDate
 import java.time.format.TextStyle
@@ -62,7 +59,7 @@ import java.util.Locale
 /**
  * The Stats screen. The streak is the hero: one very large, light numeral.
  * Everything else is a quiet ledger underneath it.
- * All numbers are worked out from the trigger log (see data/Stats.kt).
+ * All numbers are worked out from the pause log (see data/Stats.kt).
  */
 @Composable
 fun StatsScreen() {
@@ -75,7 +72,7 @@ fun StatsScreen() {
     val loaded = logs ?: return
 
     val stats = computeStats(loaded)
-    val days = answeredDays(loaded)
+    val days = prayedDays(loaded)
 
     // Numbers count up from zero when the screen opens.
     var started by remember { mutableStateOf(false) }
@@ -90,12 +87,12 @@ fun StatsScreen() {
     ) {
         Spacer(Modifier.height(36.dp))
         Text(
-            withAccentFullStop(stringResource(R.string.stats_title)),
+            stringResource(R.string.stats_title),
             style = MaterialTheme.typography.headlineLarge,
             color = MaterialTheme.colorScheme.onBackground,
         )
 
-        if (stats.answered == 0 && stats.closes == 0) {
+        if (stats.prayed == 0 && stats.closes == 0) {
             Spacer(Modifier.height(10.dp))
             Text(
                 stringResource(R.string.stats_empty),
@@ -105,37 +102,15 @@ fun StatsScreen() {
             return@Column
         }
 
-        // --- A suggestion to change difficulty, when the scores call for it ---
-        val settings = (context.applicationContext as PrayerGateApp).settings
-        var adviceHiddenUntil by remember { mutableStateOf(settings.adviceHiddenUntil) }
-        val now = System.currentTimeMillis()
-        val advice = if (now >= adviceHiddenUntil) adviseDifficulty(loaded, settings.difficulty, now) else null
-        if (advice != null) {
-            Spacer(Modifier.height(20.dp))
-            AdviceCard(
-                advice = advice,
-                current = settings.difficulty,
-                onSwitch = {
-                    settings.difficulty = advice.suggested
-                    settings.adviceHiddenUntil = now + ADVICE_PAUSE_MS
-                    adviceHiddenUntil = settings.adviceHiddenUntil
-                },
-                onDismiss = {
-                    settings.adviceHiddenUntil = now + ADVICE_PAUSE_MS
-                    adviceHiddenUntil = settings.adviceHiddenUntil
-                },
-            )
-        }
-
-        // --- The hero: the daily streak, on a lapis card ---
+        // --- The hero: the daily streak, on an olive card ---
         Spacer(Modifier.height(24.dp))
         val streak by animateIntAsState(
             if (started) stats.streakDays else 0, tween(1000, easing = FastOutSlowInEasing), label = "streak",
         )
-        LapisGround(
+        OliveGround(
             modifier = Modifier
                 .fillMaxWidth()
-                .shadow(18.dp, MaterialTheme.shapes.large, ambientColor = Lapis, spotColor = Lapis)
+                .shadow(18.dp, MaterialTheme.shapes.large, ambientColor = Olive, spotColor = Olive)
                 .clip(MaterialTheme.shapes.large),
             fullScreen = false,
         ) {
@@ -165,27 +140,19 @@ fun StatsScreen() {
         // --- The ledger ---
         Spacer(Modifier.height(28.dp))
         HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
-        val answered by animateIntAsState(if (started) stats.answered else 0, tween(900), label = "answered")
-        StatRow(stringResource(R.string.stats_answered), answered.toString())
+        val week by animateIntAsState(if (started) stats.prayedThisWeek else 0, tween(900), label = "week")
+        StatRow(stringResource(R.string.stats_prayed_week), week.toString())
 
         HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
-        val percent by animateIntAsState(if (started) stats.percentCorrect else 0, tween(900), label = "percent")
-        StatRow(stringResource(R.string.stats_correct), stringResource(R.string.stats_percent, percent))
-        // A fine line that fills to the same percentage.
-        val fill by animateFloatAsState(
-            if (started) stats.percentCorrect / 100f else 0f, tween(1000, easing = FastOutSlowInEasing), label = "bar",
-        )
-        Box(Modifier.fillMaxWidth().height(2.dp).background(MaterialTheme.colorScheme.outlineVariant)) {
-            Box(Modifier.fillMaxWidth(fill).fillMaxHeight().background(accent))
-        }
-        Spacer(Modifier.height(20.dp))
+        val prayed by animateIntAsState(if (started) stats.prayed else 0, tween(900), label = "prayed")
+        StatRow(stringResource(R.string.stats_prayed_total), prayed.toString())
 
         HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
         val closes by animateIntAsState(if (started) stats.closes else 0, tween(900), label = "closes")
         StatRow(stringResource(R.string.stats_closes), closes.toString())
 
         // --- This week, app by app ---
-        val apps = weekByApp(loaded, now)
+        val apps = weekByApp(loaded, System.currentTimeMillis())
         if (apps.isNotEmpty()) {
             Spacer(Modifier.height(36.dp))
             SectionLabel(stringResource(R.string.stats_by_app))
@@ -197,8 +164,8 @@ fun StatsScreen() {
 }
 
 /**
- * The last seven days, shown on the lapis card. A filled citron dot =
- * answered a question that day; an empty ring = no answer. The dots appear one after another.
+ * The last seven days, shown on the olive card. A filled gold dot = prayed
+ * that day; an empty ring = no prayer. The dots appear one after another.
  */
 @Composable
 private fun WeekDots(activeDays: Set<LocalDate>) {
@@ -290,49 +257,6 @@ private fun AppWeekRow(week: AppWeek) {
         Box(Modifier.fillMaxWidth().height(2.dp).background(MaterialTheme.colorScheme.outlineVariant)) {
             Box(Modifier.fillMaxWidth(fill).fillMaxHeight().background(accent))
         }
-    }
-}
-
-/** After the user acts on a suggestion (or dismisses it), stay quiet for a week. */
-private const val ADVICE_PAUSE_MS = 7 * 24 * 60 * 60 * 1000L
-
-@Composable
-private fun difficultyName(difficulty: Difficulty): String = stringResource(
-    when (difficulty) {
-        Difficulty.EASY -> R.string.difficulty_easy
-        Difficulty.MEDIUM -> R.string.difficulty_medium
-        Difficulty.HARD -> R.string.difficulty_hard
-    }
-)
-
-/** "You're getting 92% right on Easy. Ready for Medium?" with two buttons. */
-@Composable
-private fun AdviceCard(advice: DifficultyAdvice, current: Difficulty, onSwitch: () -> Unit, onDismiss: () -> Unit) {
-    val currentName = difficultyName(current)
-    val suggestedName = difficultyName(advice.suggested)
-    Column(
-        Modifier
-            .fillMaxWidth()
-            .card()
-            .padding(start = 20.dp, end = 20.dp, top = 20.dp, bottom = 8.dp),
-    ) {
-        Text(
-            stringResource(
-                if (advice.moveUp) R.string.advice_up_title else R.string.advice_down_title,
-                advice.percentCorrect, currentName,
-            ),
-            style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.onSurface,
-        )
-        Spacer(Modifier.height(2.dp))
-        Text(
-            stringResource(if (advice.moveUp) R.string.advice_up_body else R.string.advice_down_body, suggestedName),
-            style = MaterialTheme.typography.labelSmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
-        Spacer(Modifier.height(16.dp))
-        PrimaryButton(stringResource(R.string.advice_switch, suggestedName), onSwitch)
-        QuietButton(stringResource(R.string.advice_not_now), onDismiss)
     }
 }
 

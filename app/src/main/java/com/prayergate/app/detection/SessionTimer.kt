@@ -19,7 +19,7 @@ const val BREAK_RESETS_AFTER_MS = 60_000L
  *  - Leaving the app pauses the clock.
  *  - Coming back within [breakResetMs] carries on from where it was.
  *  - Coming back after [breakResetMs] or longer starts again from zero.
- *  - Seeing a question (any question) for the app starts it from zero.
+ *  - Seeing a prayer (any prayer) for the app starts it from zero.
  */
 class SessionTimer(private val breakResetMs: Long = BREAK_RESETS_AFTER_MS) {
 
@@ -32,7 +32,7 @@ class SessionTimer(private val breakResetMs: Long = BREAK_RESETS_AFTER_MS) {
 
     private val sessions = HashMap<String, Session>()
 
-    /** Starts the clock for [packageName] from zero (after the user answered a question). */
+    /** Starts the clock for [packageName] from zero (after the user prayed). */
     fun start(packageName: String, now: Long) {
         sessions[packageName] = Session().apply { runningSince = now }
     }
@@ -63,7 +63,7 @@ class SessionTimer(private val breakResetMs: Long = BREAK_RESETS_AFTER_MS) {
         session.leftAt = now
     }
 
-    /** Forgets [packageName]'s clock (a question is being shown for it). */
+    /** Forgets [packageName]'s clock (a prayer is being shown for it). */
     fun reset(packageName: String) {
         sessions.remove(packageName)
     }

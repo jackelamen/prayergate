@@ -2,6 +2,7 @@ package com.prayergate.app.ui
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.Animatable
+import androidx.annotation.StringRes
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.Spring
@@ -44,23 +45,20 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.drawscope.withTransform
 import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.rememberTextMeasurer
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.prayergate.app.R
+import com.prayergate.app.data.PrayerTheme
 import com.prayergate.app.ui.theme.LocalAccent
-import kotlin.math.cos
-import kotlin.math.sin
 
 /*
  * Small building blocks shared by several screens.
@@ -165,6 +163,19 @@ fun QuietButton(text: String, onClick: () -> Unit, modifier: Modifier = Modifier
     }
 }
 
+/** The name of a prayer theme, e.g. "Temptation". */
+@StringRes
+fun themeName(theme: PrayerTheme): Int = when (theme) {
+    PrayerTheme.TEMPTATION -> R.string.theme_temptation
+    PrayerTheme.JUDGING -> R.string.theme_judging
+    PrayerTheme.NEIGHBOR -> R.string.theme_neighbor
+    PrayerTheme.INFLUENCE -> R.string.theme_influence
+    PrayerTheme.DISCERNMENT -> R.string.theme_discernment
+    PrayerTheme.COMPARISON -> R.string.theme_comparison
+    PrayerTheme.WORDS -> R.string.theme_words
+    PrayerTheme.TIME -> R.string.theme_time
+}
+
 /** Text style for Korean sentences. */
 @Composable
 fun koreanStyle(): TextStyle = MaterialTheme.typography.bodyMedium
@@ -178,7 +189,7 @@ fun koreanStyle(): TextStyle = MaterialTheme.typography.bodyMedium
 fun keepKoreanWordsTogether(text: String): String =
     text.split(' ').joinToString(" ") { word -> word.toList().joinToString("\u2060") }
 
-/** A small label in spaced capitals, e.g. "DIFFICULTY". */
+/** A small label in spaced capitals, e.g. "THEMES". */
 @Composable
 fun SectionLabel(
     text: String,
@@ -194,26 +205,6 @@ fun SectionLabel(
         overflow = TextOverflow.Ellipsis,
         modifier = modifier,
     )
-}
-
-/**
- * Returns [text] with its final full stop (or "!") coloured in the accent.
- * This is the app's signature, used on the big headlines.
- */
-@Composable
-fun withAccentFullStop(text: String): AnnotatedString {
-    val accent = LocalAccent.current.accent
-    // The final full stop, or the "!" of short Korean feedback such as "정답!".
-    val mark = text.lastOrNull()
-    if (mark != '.' && mark != '!') return AnnotatedString(text)
-    return buildAnnotatedString {
-        // The invisible word joiner (U+2060) keeps the coloured dot on the same
-        // line as the last word. Without it, Android may treat the colour change
-        // as a place to break the line, and the dot falls onto a line of its own.
-        append(text.dropLast(1))
-        append("\u2060")
-        withStyle(SpanStyle(color = accent)) { append(mark.toString()) }
-    }
 }
 
 /**
@@ -264,13 +255,38 @@ fun <T> ChoiceRow(
 }
 
 /**
- * The lapis full stop: PrayerGate's signature, and the sign for "pause".
+ * The outline of PrayerGate's flame, fitted into a box [width] wide and
+ * 1.5 x [width] tall with its top-left corner at [left], [top]. The tip
+ * leans to the right and the left side curves in and out like a flicker,
+ * so it reads as a flame and not a drop of water. Used by [Flame] and the
+ * large flame on the olive ground. tools/make_icons.py draws the launcher,
+ * notification and widget icons from the same numbers: change both together.
+ */
+fun flamePath(left: Float, top: Float, width: Float): Path {
+    val w = width
+    val h = width * 1.5f
+    fun x(f: Float) = left + w * f
+    fun y(f: Float) = top + h * f
+    return Path().apply {
+        moveTo(x(0.62f), y(0f))
+        cubicTo(x(0.70f), y(0.18f), x(0.92f), y(0.36f), x(0.92f), y(0.64f))
+        cubicTo(x(0.92f), y(0.86f), x(0.73f), y(1f), x(0.5f), y(1f))
+        cubicTo(x(0.27f), y(1f), x(0.08f), y(0.86f), x(0.08f), y(0.64f))
+        cubicTo(x(0.08f), y(0.46f), x(0.26f), y(0.36f), x(0.40f), y(0.24f))
+        cubicTo(x(0.50f), y(0.15f), x(0.58f), y(0.09f), x(0.62f), y(0f))
+        close()
+    }
+}
+
+/**
+ * The flame: PrayerGate's signature, a small lamp kept lit.
  *
- * With [breathing] it swells and settles slowly, like a calm breath.
- * When [celebrate] becomes true it jumps and throws out a ring of fine rays.
+ * With [breathing] it rises and settles slowly, like a calm breath, with a
+ * soft halo. When [celebrate] becomes true (the user said Amen) it swells
+ * once and a wide glow opens around it and fades.
  */
 @Composable
-fun FullStop(modifier: Modifier = Modifier, breathing: Boolean = false, celebrate: Boolean = false) {
+fun Flame(modifier: Modifier = Modifier, breathing: Boolean = false, celebrate: Boolean = false) {
     val accent = LocalAccent.current.accent
 
     // Breathing: a number that drifts between 0 and 1 forever.
@@ -278,50 +294,41 @@ fun FullStop(modifier: Modifier = Modifier, breathing: Boolean = false, celebrat
     val breath by transition.animateFloat(
         initialValue = 0f,
         targetValue = 1f,
-        animationSpec = infiniteRepeatable(tween(2800, easing = FastOutSlowInEasing), RepeatMode.Reverse),
+        animationSpec = infiniteRepeatable(tween(3200, easing = FastOutSlowInEasing), RepeatMode.Reverse),
         label = "breath",
     )
 
-    // Celebration: the dot pops, and rays fly outwards once.
-    val pop = remember { Animatable(1f) }
-    val rays = remember { Animatable(0f) }
+    // Celebration: the flame swells, and a glow opens around it once.
+    val swell = remember { Animatable(1f) }
+    val glow = remember { Animatable(0f) }
     LaunchedEffect(celebrate) {
         if (celebrate) {
-            pop.animateTo(1.9f, tween(120))
-            pop.animateTo(1f, spring(dampingRatio = 0.3f, stiffness = Spring.StiffnessMediumLow))
+            swell.animateTo(1.45f, tween(260, easing = FastOutSlowInEasing))
+            swell.animateTo(1.15f, spring(dampingRatio = 0.6f, stiffness = Spring.StiffnessLow))
+        } else {
+            swell.snapTo(1f)
         }
     }
     LaunchedEffect(celebrate) {
-        if (celebrate) rays.animateTo(1f, tween(700, easing = FastOutSlowInEasing))
+        if (celebrate) glow.animateTo(1f, tween(1400, easing = FastOutSlowInEasing)) else glow.snapTo(0f)
     }
 
     Canvas(modifier.size(28.dp)) {
         val center = Offset(size.width / 2, size.height / 2)
-        val radius = 4.5.dp.toPx() * pop.value
-
+        val t = glow.value
+        if (t > 0f && t < 1f) {
+            drawCircle(accent, radius = 6.dp.toPx() + 22.dp.toPx() * t, center = center, alpha = 0.35f * (1f - t))
+        }
         if (breathing) {
             // A soft halo that grows and fades with each breath.
-            drawCircle(accent, radius = radius + 3.dp.toPx() + 6.dp.toPx() * breath, center = center, alpha = 0.20f - 0.14f * breath)
+            drawCircle(accent, radius = 7.dp.toPx() + 4.dp.toPx() * breath, center = center, alpha = 0.16f - 0.11f * breath)
         }
-        drawCircle(accent, radius = radius, center = center)
-
-        // The rays: twelve fine lines that travel outwards and fade.
-        val t = rays.value
-        if (t > 0f && t < 1f) {
-            val start = 10.dp.toPx() + 14.dp.toPx() * t
-            val length = 8.dp.toPx() * (1f - t)
-            for (i in 0 until 12) {
-                val angle = Math.toRadians(i * 30.0).toFloat()
-                val direction = Offset(cos(angle), sin(angle))
-                drawLine(
-                    color = accent,
-                    start = center + direction * start,
-                    end = center + direction * (start + length),
-                    strokeWidth = 1.6.dp.toPx(),
-                    cap = StrokeCap.Round,
-                    alpha = 1f - t,
-                )
-            }
+        // The flame is drawn from its base, so it grows upwards.
+        val stretch = if (breathing) 1f + 0.06f * breath else 1f
+        val width = 10.dp.toPx() * swell.value
+        val base = center.y + 7.5.dp.toPx()
+        withTransform({ scale(1f, stretch, pivot = Offset(center.x, base)) }) {
+            drawPath(flamePath(center.x - width / 2, base - width * 1.5f, width), accent)
         }
     }
 }

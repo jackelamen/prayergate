@@ -7,18 +7,26 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.selection.toggleable
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.MaterialTheme
@@ -42,10 +50,10 @@ import androidx.compose.ui.unit.dp
 import com.prayergate.app.R
 import com.prayergate.app.PrayerGateApp
 import com.prayergate.app.data.AppReset
-import com.prayergate.app.data.Difficulty
+import com.prayergate.app.data.PrayerTheme
 import com.prayergate.app.data.Engine
-import com.prayergate.app.data.QuestionType
 import com.prayergate.app.detection.Engines
+import com.prayergate.app.ui.theme.LocalAccent
 
 /** How many taps on the version number open the hidden debug screen. */
 private const val TAPS_TO_OPEN_DEBUG = 7
@@ -63,11 +71,9 @@ fun SettingsScreen(
 
     // Each value is kept twice: in Compose state (so the screen redraws)
     // and in Settings (so it is saved). The helpers below update both.
-    var difficulty by remember { mutableStateOf(settings.difficulty) }
-    var questionType by remember { mutableStateOf(settings.questionType) }
+    var themes by remember { mutableStateOf(settings.themes) }
     var cooldown by remember { mutableIntStateOf(settings.cooldownMinutes) }
     var timeCheck by remember { mutableIntStateOf(settings.sessionLimitMinutes) }
-    var korean by remember { mutableStateOf(settings.koreanExplanations) }
     var engine by remember { mutableStateOf(settings.engine) }
 
     Column(
@@ -79,58 +85,31 @@ fun SettingsScreen(
     ) {
         Spacer(Modifier.height(36.dp))
         Text(
-            withAccentFullStop(stringResource(R.string.settings_title)),
+            stringResource(R.string.settings_title),
             style = MaterialTheme.typography.headlineLarge,
             color = MaterialTheme.colorScheme.onBackground,
         )
 
-        // --- Difficulty ---
+        // --- Themes ---
         Spacer(Modifier.height(32.dp))
-        SectionLabel(stringResource(R.string.settings_difficulty))
+        SectionLabel(stringResource(R.string.settings_themes))
         Spacer(Modifier.height(12.dp))
-        ChoiceRow(
-            options = Difficulty.entries,
-            selected = difficulty,
-            label = {
-                stringResource(
-                    when (it) {
-                        Difficulty.EASY -> R.string.difficulty_easy
-                        Difficulty.MEDIUM -> R.string.difficulty_medium
-                        Difficulty.HARD -> R.string.difficulty_hard
-                    }
-                )
+        ThemePicker(
+            selected = themes,
+            onToggle = { theme ->
+                // At least one theme always stays on.
+                val next = if (theme in themes) themes - theme else themes + theme
+                if (next.isNotEmpty()) {
+                    themes = next
+                    settings.themes = next
+                }
             },
-            onSelect = { difficulty = it; settings.difficulty = it },
         )
-
-        // --- Question type ---
-        Spacer(Modifier.height(32.dp))
-        SectionLabel(stringResource(R.string.settings_type))
-        Spacer(Modifier.height(10.dp))
-        ChoiceRow(
-            options = QuestionType.entries,
-            selected = questionType,
-            label = {
-                stringResource(
-                    when (it) {
-                        QuestionType.VOCABULARY -> R.string.type_vocabulary
-                        QuestionType.GRAMMAR -> R.string.type_grammar
-                        QuestionType.BOTH -> R.string.type_both
-                    }
-                )
-            },
-            onSelect = { questionType = it; settings.questionType = it },
-        )
-
-        // --- Explanation language ---
-        Spacer(Modifier.height(32.dp))
-        SectionLabel(stringResource(R.string.settings_explanations))
-        Spacer(Modifier.height(12.dp))
-        ChoiceRow(
-            options = listOf(false, true),
-            selected = korean,
-            label = { stringResource(if (it) R.string.explanations_with_korean else R.string.explanations_english) },
-            onSelect = { korean = it; settings.koreanExplanations = it },
+        Text(
+            stringResource(R.string.settings_themes_hint),
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.padding(top = 10.dp),
         )
 
         // --- Cooldown ---
@@ -316,8 +295,48 @@ private fun EngineCard(title: String, description: String, selected: Boolean, on
             Spacer(Modifier.height(3.dp))
             Text(description, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
-        // The lapis full stop marks the selected engine.
+        // The flame marks the selected engine.
         val dot by animateFloatAsState(if (selected) 1f else 0f, label = "engineDot")
-        FullStop(Modifier.graphicsLayer { alpha = dot; scaleX = dot; scaleY = dot })
+        Flame(Modifier.graphicsLayer { alpha = dot; scaleX = dot; scaleY = dot })
+    }
+}
+
+/**
+ * The eight prayer themes as pills that wrap onto several lines. A chosen
+ * theme is filled with the accent and has a tick, so colour is not the only
+ * signal; the last chosen theme cannot be switched off.
+ */
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun ThemePicker(selected: Set<PrayerTheme>, onToggle: (PrayerTheme) -> Unit) {
+    val accent = LocalAccent.current
+    FlowRow(
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        for (theme in PrayerTheme.entries) {
+            val on = theme in selected
+            val background by animateColorAsState(
+                if (on) accent.accent else MaterialTheme.colorScheme.surfaceVariant, label = "themeBg",
+            )
+            val textColor by animateColorAsState(
+                if (on) accent.onAccent else MaterialTheme.colorScheme.onSurfaceVariant, label = "themeText",
+            )
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .clip(RoundedCornerShape(50))
+                    .background(background)
+                    .toggleable(value = on, role = Role.Checkbox, onValueChange = { onToggle(theme) })
+                    .heightIn(min = 44.dp)
+                    .padding(horizontal = 16.dp, vertical = 10.dp),
+            ) {
+                Text(
+                    (if (on) "\u2713 " else "") + stringResource(themeName(theme)),
+                    style = MaterialTheme.typography.labelLarge,
+                    color = textColor,
+                )
+            }
+        }
     }
 }

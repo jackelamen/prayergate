@@ -39,7 +39,7 @@ object Permissions {
     fun usageAccessIntent(context: Context): Intent =
         Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS, Uri.parse("package:${context.packageName}"))
 
-    /** Engine A: may we open the question screen while another app is in front? */
+    /** Engine A: may we open the prayer screen while another app is in front? */
     fun canDrawOverlays(context: Context): Boolean = Settings.canDrawOverlays(context)
 
     fun overlayIntent(context: Context): Intent =

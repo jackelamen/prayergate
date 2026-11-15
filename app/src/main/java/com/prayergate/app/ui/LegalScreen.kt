@@ -58,8 +58,8 @@ private val PRIVACY_SECTIONS = listOf(
 private data class Component(val name: String, val owner: String, val licence: String, val file: String)
 
 private val COMPONENTS = listOf(
-    Component("Newsreader (font)", "The Newsreader Project Authors", "SIL Open Font License 1.1", "ofl-newsreader.txt"),
-    Component("Hanken Grotesk (font)", "The Hanken Grotesk Project Authors", "SIL Open Font License 1.1", "ofl-hanken-grotesk.txt"),
+    Component("EB Garamond (font)", "The EB Garamond Project Authors", "SIL Open Font License 1.1", "ofl-eb-garamond.txt"),
+    Component("Instrument Sans (font)", "The Instrument Sans Project Authors", "SIL Open Font License 1.1", "ofl-instrument-sans.txt"),
     Component("Jetpack Compose, Material 3", "The Android Open Source Project", "Apache License 2.0", "apache-2.0.txt"),
     Component("AndroidX Core, Activity, Lifecycle, Room", "The Android Open Source Project", "Apache License 2.0", "apache-2.0.txt"),
     Component("Kotlin, kotlinx.coroutines", "JetBrains s.r.o. and contributors", "Apache License 2.0", "apache-2.0.txt"),
@@ -118,6 +118,10 @@ private fun LegalMenu(onBack: () -> Unit, onOpen: (LegalPage) -> Unit) {
             MenuRow(stringResource(R.string.privacy_title)) { onOpen(LegalPage.PRIVACY) }
             MenuRow(stringResource(R.string.licences_title)) { onOpen(LegalPage.LICENCES) }
             HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
+            Spacer(Modifier.height(24.dp))
+            SectionLabel(stringResource(R.string.content_t))
+            Spacer(Modifier.height(8.dp))
+            Text(stringResource(R.string.content_note), style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
             Spacer(Modifier.height(24.dp))
             SectionLabel(stringResource(R.string.trademarks_t))
             Spacer(Modifier.height(8.dp))
