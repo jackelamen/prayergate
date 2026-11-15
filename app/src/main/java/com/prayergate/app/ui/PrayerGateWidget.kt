@@ -9,6 +9,7 @@ import android.content.Intent
 import android.widget.RemoteViews
 import com.prayergate.app.R
 import com.prayergate.app.PrayerGateApp
+import com.prayergate.app.data.AppLanguage
 import com.prayergate.app.data.PrayerBook
 import com.prayergate.app.data.computeStats
 import com.prayergate.app.data.prayerOfTheDay
@@ -42,7 +43,10 @@ class PrayerGateWidget : AppWidgetProvider() {
         }
     }
 
-    private fun buildViews(context: Context, app: PrayerGateApp): RemoteViews {
+    private fun buildViews(base: Context, app: PrayerGateApp): RemoteViews {
+        // The widget is drawn by the launcher, in the phone's language, so every
+        // text is set here from the language chosen in the app.
+        val context = AppLanguage.wrap(base)
         val today = LocalDate.now()
         val streak = computeStats(app.database.triggerLogDao().getAll(), today).streakDays
         val prayer = prayerOfTheDay(PrayerBook.load(context), app.settings.themes, today.toEpochDay())
@@ -55,6 +59,8 @@ class PrayerGateWidget : AppWidgetProvider() {
             context.resources.getQuantityString(R.plurals.stats_streak_label, streak),
         )
         views.setTextViewText(R.id.widget_prayer, prayer.text(korean))
+        views.setTextViewText(R.id.widget_label, context.getString(R.string.widget_today))
+        views.setTextViewText(R.id.widget_hint, context.getString(R.string.widget_tap))
 
         // Tap anywhere: pray today's prayer.
         val tap = PendingIntent.getActivity(

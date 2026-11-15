@@ -49,6 +49,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import com.prayergate.app.R
 import com.prayergate.app.PrayerGateApp
+import com.prayergate.app.data.AppLanguage
 import com.prayergate.app.data.AppReset
 import com.prayergate.app.data.PrayerTheme
 import com.prayergate.app.data.Engine
@@ -88,6 +89,32 @@ fun SettingsScreen(
             stringResource(R.string.settings_title),
             style = MaterialTheme.typography.headlineLarge,
             color = MaterialTheme.colorScheme.onBackground,
+        )
+
+        // --- Language ---
+        Spacer(Modifier.height(32.dp))
+        SectionLabel(stringResource(R.string.settings_language))
+        Spacer(Modifier.height(12.dp))
+        val setLanguage = rememberLanguageSetter()
+        ChoiceRow(
+            options = AppLanguage.entries,
+            selected = AppLanguage.saved(context),
+            label = {
+                stringResource(
+                    when (it) {
+                        AppLanguage.SYSTEM -> R.string.lang_system
+                        AppLanguage.ENGLISH -> R.string.lang_english
+                        AppLanguage.KOREAN -> R.string.lang_korean
+                    }
+                )
+            },
+            onSelect = setLanguage,
+        )
+        Text(
+            stringResource(R.string.settings_language_hint),
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.padding(top = 10.dp),
         )
 
         // --- Themes ---

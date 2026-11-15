@@ -70,6 +70,13 @@ Notes are at the top of `ui/theme/Theme.kt`.
 
 ## Text and Korean
 
+The language follows the phone unless the user picks one: Settings > Language
+(Phone default, English, 한국어) or the switch at the top of the welcome screen.
+The choice is saved in the `settings` preferences (`AppLanguage`), applied to
+both activities in `attachBaseContext`, and also used for the widget and the
+Engine A notification, which the system would otherwise draw in the phone's
+language. Reset keeps the language choice.
+
 All UI text is in `res/values/strings.xml`. Korean is written in
 `tools/strings_ko_source.xml` and generated with `python3 tools/make_strings_ko.py`,
 which fails if any string is missing and glues Hangul syllables with U+2060 so

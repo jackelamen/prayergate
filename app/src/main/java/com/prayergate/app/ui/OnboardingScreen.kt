@@ -52,6 +52,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -400,11 +401,21 @@ private fun WelcomeStep(onNext: () -> Unit) {
                 .readableWidth()
                 .padding(horizontal = 28.dp),
         ) {
-            // The name of the app, small, at the top.
-            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.height(64.dp)) {
-                Flame(breathing = true)
-                Spacer(Modifier.width(8.dp))
-                SectionLabel(stringResource(R.string.app_name), color = MaterialTheme.colorScheme.onBackground)
+            // The flame, the name of the app (small) and the language switch.
+            // On a very narrow screen with large text the name would be cut
+            // off mid-word, so there it is left out and the switch stays.
+            BoxWithConstraints(Modifier.fillMaxWidth().height(64.dp)) {
+                val showName = maxWidth.value / LocalDensity.current.fontScale >= 230f
+                Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxSize()) {
+                    Flame(breathing = true)
+                    Spacer(Modifier.width(8.dp))
+                    if (showName) {
+                        SectionLabel(stringResource(R.string.app_name), color = MaterialTheme.colorScheme.onBackground, modifier = Modifier.weight(1f))
+                    } else {
+                        Spacer(Modifier.weight(1f))
+                    }
+                    LanguageToggle()
+                }
             }
 
             Column(

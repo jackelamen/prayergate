@@ -38,6 +38,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
@@ -54,7 +55,6 @@ import com.prayergate.app.ui.theme.Olive
 import com.prayergate.app.ui.theme.LocalAccent
 import java.time.LocalDate
 import java.time.format.TextStyle
-import java.util.Locale
 
 /**
  * The Stats screen. The streak is the hero: one very large, light numeral.
@@ -196,7 +196,7 @@ private fun WeekDots(activeDays: Set<LocalDate>) {
                 Spacer(Modifier.height(10.dp))
                 // One-letter day name, in the phone's language. Today is in ink.
                 SectionLabel(
-                    day.dayOfWeek.getDisplayName(TextStyle.NARROW, Locale.getDefault()),
+                    day.dayOfWeek.getDisplayName(TextStyle.NARROW, LocalConfiguration.current.locales[0]),
                     color = MaterialTheme.colorScheme.onBackground.copy(alpha = if (daysAgo == 0) 1f else 0.6f),
                 )
             }

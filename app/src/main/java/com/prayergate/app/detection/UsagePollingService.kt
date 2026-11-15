@@ -16,6 +16,7 @@ import android.os.PowerManager
 import androidx.core.app.NotificationCompat
 import androidx.core.app.ServiceCompat
 import com.prayergate.app.R
+import com.prayergate.app.data.AppLanguage
 import com.prayergate.app.PrayerGateApp
 import com.prayergate.app.data.Engine
 import com.prayergate.app.ui.MainActivity
@@ -107,7 +108,7 @@ class UsagePollingService : Service() {
         val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val channel = NotificationChannel(
             CHANNEL_ID,
-            getString(R.string.notification_channel_name),
+            AppLanguage.wrap(this).getString(R.string.notification_channel_name),
             NotificationManager.IMPORTANCE_MIN, // silent, and collapsed at the bottom of the list
         )
         manager.createNotificationChannel(channel)
@@ -118,8 +119,8 @@ class UsagePollingService : Service() {
         )
         val notification: Notification = NotificationCompat.Builder(this, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_notification)
-            .setContentTitle(getString(R.string.notification_title))
-            .setContentText(getString(R.string.notification_text))
+            .setContentTitle(AppLanguage.wrap(this).getString(R.string.notification_title))
+            .setContentText(AppLanguage.wrap(this).getString(R.string.notification_text))
             .setContentIntent(openApp)
             .setOngoing(true)
             .build()

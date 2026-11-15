@@ -137,7 +137,7 @@
     <string name="manual_privacy_t">개⁠인⁠정⁠보</string>
     <string name="manual_privacy">Prayer Gate⁠는 계⁠정⁠이 없⁠고 인⁠터⁠넷⁠을 사⁠용⁠하⁠지 않⁠아⁠요. 선⁠택⁠한 앱, 기⁠도 기⁠록, 저⁠장⁠한 기⁠도⁠문⁠은 모⁠두 이 휴⁠대⁠폰⁠에⁠만 저⁠장⁠돼⁠요. Prayer Gate⁠를 삭⁠제⁠하⁠면 모⁠든 데⁠이⁠터⁠가 함⁠께 삭⁠제⁠돼⁠요.</string>
     <string name="manual_language_t">언⁠어</string>
-    <string name="manual_language">Prayer Gate⁠는 휴⁠대⁠폰 언⁠어⁠에 맞⁠춰 한⁠국⁠어 또⁠는 영⁠어⁠로 표⁠시⁠돼⁠요. Android 13 이⁠상⁠에⁠서⁠는 설⁠정 > 애⁠플⁠리⁠케⁠이⁠션 > Prayer Gate > 언⁠어⁠에⁠서 Prayer Gate⁠만 다⁠른 언⁠어⁠로 바⁠꿀 수 있⁠어⁠요.</string>
+    <string name="manual_language">Prayer Gate⁠는 처⁠음⁠에 휴⁠대⁠폰 언⁠어(한⁠국⁠어 또⁠는 영⁠어)⁠로 표⁠시⁠돼⁠요. 다⁠른 언⁠어⁠를 쓰⁠려⁠면 설⁠정 > 언⁠어⁠에⁠서 바⁠꾸⁠거⁠나, 시⁠작 화⁠면 위⁠쪽⁠의 English 또⁠는 한⁠국⁠어⁠를 탭⁠하⁠세⁠요. 기⁠도⁠문, 위⁠젯, 알⁠림⁠도 함⁠께 바⁠뀌⁠어⁠요. \'⁠기⁠기 설⁠정\'⁠을 고⁠르⁠면 다⁠시 휴⁠대⁠폰 언⁠어⁠를 따⁠라⁠요.</string>
 
     <!-- 권한 -->
     <string name="perm_allow">허⁠용</string>
@@ -240,6 +240,8 @@
 
     <!-- 설정 -->
     <string name="settings_title">설⁠정</string>
+    <string name="settings_language_hint">앱 전⁠체⁠와 위⁠젯⁠의 언⁠어⁠가 바⁠뀌⁠어⁠요.</string>
+    <string name="lang_system">기⁠기 설⁠정</string>
     <string name="settings_themes">주⁠제</string>
     <string name="settings_themes_hint">고⁠른 주⁠제⁠에⁠서 기⁠도⁠문⁠이 나⁠와⁠요. 최⁠소 한 가⁠지⁠는 켜⁠져 있⁠어⁠야 해⁠요.</string>
     <string name="settings_cooldown">재⁠알⁠림 대⁠기 시⁠간</string>

@@ -1,5 +1,6 @@
 package com.prayergate.app.ui
 
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
@@ -44,6 +45,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.prayergate.app.R
+import com.prayergate.app.data.AppLanguage
 import com.prayergate.app.PrayerGateApp
 import com.prayergate.app.detection.Engines
 import com.prayergate.app.detection.Permissions
@@ -55,6 +57,11 @@ import com.prayergate.app.ui.theme.PrayerGateTheme
  * screen (that one is PrayerActivity, because it opens on top of other apps).
  */
 class MainActivity : ComponentActivity() {
+
+    /** Gives this screen the language chosen in Settings (see AppLanguage). */
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(AppLanguage.wrap(newBase))
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -80,6 +80,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import com.prayergate.app.PrayerGateApp
 import com.prayergate.app.R
+import com.prayergate.app.data.AppLanguage
 import com.prayergate.app.data.Engine
 import com.prayergate.app.data.Prayer
 import com.prayergate.app.data.PrayerBook
@@ -108,6 +109,11 @@ import kotlinx.coroutines.launch
 class PrayerActivity : ComponentActivity() {
 
     private val app get() = application as PrayerGateApp
+
+    /** Gives this screen the language chosen in Settings (see AppLanguage). */
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(AppLanguage.wrap(newBase))
+    }
 
     // What triggered this screen (read from the Intent).
     private var targetPackage = ""

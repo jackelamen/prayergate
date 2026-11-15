@@ -136,7 +136,7 @@
     <string name="manual_privacy_t">개인정보</string>
     <string name="manual_privacy">Prayer Gate는 계정이 없고 인터넷을 사용하지 않아요. 선택한 앱, 기도 기록, 저장한 기도문은 모두 이 휴대폰에만 저장돼요. Prayer Gate를 삭제하면 모든 데이터가 함께 삭제돼요.</string>
     <string name="manual_language_t">언어</string>
-    <string name="manual_language">Prayer Gate는 휴대폰 언어에 맞춰 한국어 또는 영어로 표시돼요. Android 13 이상에서는 설정 > 애플리케이션 > Prayer Gate > 언어에서 Prayer Gate만 다른 언어로 바꿀 수 있어요.</string>
+    <string name="manual_language">Prayer Gate는 처음에 휴대폰 언어(한국어 또는 영어)로 표시돼요. 다른 언어를 쓰려면 설정 > 언어에서 바꾸거나, 시작 화면 위쪽의 English 또는 한국어를 탭하세요. 기도문, 위젯, 알림도 함께 바뀌어요. \'기기 설정\'을 고르면 다시 휴대폰 언어를 따라요.</string>
 
     <!-- 권한 -->
     <string name="perm_allow">허용</string>
@@ -239,6 +239,8 @@
 
     <!-- 설정 -->
     <string name="settings_title">설정</string>
+    <string name="settings_language_hint">앱 전체와 위젯의 언어가 바뀌어요.</string>
+    <string name="lang_system">기기 설정</string>
     <string name="settings_themes">주제</string>
     <string name="settings_themes_hint">고른 주제에서 기도문이 나와요. 최소 한 가지는 켜져 있어야 해요.</string>
     <string name="settings_cooldown">재알림 대기 시간</string>
