@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Korean text for PrayerGate. EDIT THIS FILE, not res/values-ko/strings.xml.
+
+    After editing, run:  python3 tools/make_strings_ko.py
+    The script copies this file to app/src/main/res/values-ko/strings.xml and
+    glues the letters of each Korean word together with an invisible
+    "word joiner", so Android wraps lines between words, not inside them.
+
+    Style, following Korean game and UI conventions:
+    - Quiz feedback is short, like a game: 정답!  오답!  6연속 정답!
+      (정답 on its own is also the label for "the answer", e.g. 정답: huge.)
+    - Buttons and settings use standard UI forms: -하기, 변경, 사용 안 함,
+      전체, 탭하여, ~개 선택됨, 실행 중.
+    - Explanations and help text use polite 해요체.
+    - Settings names follow the words Samsung uses in its own Korean settings
+      screens (사용 정보 접근, 다른 앱 위에 표시, 제한된 설정, 절전 예외 앱),
+      so the instructions match what people see on their phones.
+    Keep the name="..." parts and the %1$s / %1$d placeholders exactly as they are.
+-->
+<resources>
+    <string name="app_name">PrayerGate</string>
+
+    <!-- 하단 탭 -->
+    <string name="tab_apps">앱</string>
+    <string name="tab_review">복습</string>
+    <string name="tab_stats">통계</string>
+    <string name="tab_settings">설정</string>
+
+    <!-- 시작 안내 -->
+    <string name="onboarding_title">스크롤하기 전에 영어 한 문제.</string>
+    <string name="onboarding_body_1">시간을 많이 빼앗는 앱을 골라 주세요. 그 앱을 열 때마다 PrayerGate가 영어 어휘나 문법 문제를 하나 보여 줘요.</string>
+    <string name="onboarding_body_2">문제를 푼 다음, 앱을 계속 열지 아니면 닫고 하던 일로 돌아갈지 정하세요. 앱을 막지는 않아요.</string>
+    <string name="onboarding_body_3">계정도 인터넷 연결도 필요 없어요. 모든 데이터는 이 휴대폰에만 저장돼요.</string>
+    <string name="onboarding_next">시작하기</string>
+
+    <!-- 설정 단계(화면마다 한 가지) -->
+    <string name="ob_step">%2$d단계 중 %1$d단계</string>
+    <string name="ob_open_settings">설정 열기</string>
+    <string name="ob_continue">계속</string>
+    <string name="ob_find_switch">다음 화면에서 PrayerGate를 찾아 스위치를 켜세요. 켜면 자동으로 이 화면으로 돌아와요.</string>
+    <string name="ob_tap_allow">팝업에서 \'허용\'을 누르세요.</string>
+    <string name="ob_overlay_title">다른 앱 위에 표시를 허용해 주세요.</string>
+    <string name="ob_overlay_body">앱을 여는 순간 문제를 띄우려면 필요해요.</string>
+    <string name="ob_usage_title">사용 정보 접근을 허용해 주세요.</string>
+    <string name="ob_usage_body">PrayerGate는 앱 이름만 확인하고, 화면 내용은 읽지 않아요.</string>
+    <string name="ob_notifications_title">알림을 허용해 주세요.</string>
+    <string name="ob_notifications_body">PrayerGate가 실행되는 동안 소리 없는 알림이 하나 표시돼요.</string>
+    <string name="ob_battery_title">PrayerGate가 계속 실행되도록 해 주세요.</string>
+    <string name="ob_battery_body">그렇지 않으면 Android가 배터리를 아끼려고 PrayerGate를 멈춰서 문제가 나오지 않을 수 있어요.</string>
+    <string name="ob_apps_pick_one">앱을 하나 이상 선택하세요</string>
+    <string name="ob_apps_done">완료</string>
+    <string name="ob_ready_title">설정 완료!</string>
+    <string name="ob_ready_body">지금 %1$s 앱을 열면 첫 문제가 나와요.</string>
+    <string name="ob_ready_tip">앱, 난이도 등은 언제든지 바꿀 수 있어요. 사용 설명서는 설정에서 볼 수 있어요.</string>
+    <string name="ob_finish">PrayerGate 시작하기</string>
+    <string name="apps_suggested">추천 앱</string>
+    <string name="apps_all">전체 앱</string>
+
+    <!-- 설정: 도움말, 데이터 -->
+    <string name="settings_help">도움말</string>
+    <string name="manual_open">사용 설명서</string>
+    <string name="manual_open_desc">PrayerGate 사용법, 모든 설정, 문제 해결 방법</string>
+    <string name="settings_data">데이터</string>
+    <string name="reset_title">PrayerGate 초기화</string>
+    <string name="reset_desc">모든 기록과 설정을 삭제하고 처음 설정부터 다시 시작해요.</string>
+    <string name="reset_confirm_title">PrayerGate를 초기화할까요?</string>
+    <string name="reset_confirm_body">선택한 앱, 답한 기록, 복습 목록, 통계, 연속 기록, 설정이 모두 삭제되고 처음 설정부터 다시 시작해요. 삭제한 내용은 되돌릴 수 없어요. Android 설정에서 허용한 권한은 그대로 유지돼요.</string>
+    <string name="reset_confirm">초기화</string>
+    <string name="reset_cancel">취소</string>
+
+    <!-- 앱 정보 및 법적 고지(설정 > 도움말). 법적 문서는 관례에 따라 합니다체를 써요. -->
+    <string name="legal_title">앱 정보 및 법적 고지</string>
+    <string name="legal_desc">개인정보처리방침, 오픈소스 라이선스, 상표</string>
+    <string name="licences_title">오픈소스 라이선스</string>
+    <string name="licences_intro">PrayerGate는 다음 오픈소스 구성 요소를 사용합니다. 항목을 탭하면 라이선스 전문을 볼 수 있습니다.</string>
+    <string name="trademarks_t">상표</string>
+    <string name="trademarks">PrayerGate에 표시되는 Instagram, TikTok, YouTube 등의 앱 이름은 각 소유자의 상표입니다. PrayerGate는 해당 회사와 제휴 관계가 없으며 보증을 받지 않았습니다.</string>
+
+    <!-- 개인정보처리방침 -->
+    <string name="privacy_title">개인정보처리방침</string>
+    <string name="privacy_effective">시행일: %1$s</string>
+    <string name="privacy_date">2026년 11월 15일</string>
+    <string name="privacy_summary_t">요약</string>
+    <string name="privacy_summary">PrayerGate는 개인정보를 수집하거나 외부로 전송하거나 제3자에게 제공하지 않습니다. 기록되는 모든 정보는 사용자의 휴대폰에만 저장됩니다.</string>
+    <string name="privacy_stored_t">휴대폰에 저장되는 정보</string>
+    <string name="privacy_stored">사용자가 선택한 앱, 문제가 표시될 때마다의 앱 이름·시간·문제가 표시되기까지 걸린 시간·정답 여부·\'닫기\' 또는 \'열기\' 선택, 문제별 학습 기록, 설정이 저장됩니다. 이 정보는 다른 앱이 읽을 수 없는 PrayerGate 전용 저장 공간에 보관됩니다.</string>
+    <string name="privacy_read_t">PrayerGate가 확인하는 정보</string>
+    <string name="privacy_read">선택한 앱이 열리는 순간을 알기 위해 Android의 사용 정보 접근 또는 접근성 서비스(설정에서 선택)를 통해 화면 맨 앞에 있는 앱의 이름만 확인합니다. 화면 내용, 입력 내용, 메시지, 비밀번호는 읽지 않습니다.</string>
+    <string name="privacy_sent_t">외부로 전송되는 정보</string>
+    <string name="privacy_sent">없습니다. PrayerGate는 인터넷 권한, 계정, 광고, 분석 도구, 제3자 서비스를 사용하지 않습니다. Android 백업도 사용하지 않으므로 데이터가 클라우드에 복사되지 않습니다.</string>
+    <string name="privacy_delete_t">데이터 삭제</string>
+    <string name="privacy_delete">설정 > PrayerGate 초기화에서 모든 기록과 설정을 삭제할 수 있습니다. 앱을 삭제하면 저장된 모든 데이터가 함께 삭제됩니다.</string>
+    <string name="privacy_children_t">아동의 개인정보</string>
+    <string name="privacy_children">PrayerGate는 아동을 포함한 누구의 개인정보도 수집하지 않습니다.</string>
+    <string name="privacy_changes_t">방침의 변경</string>
+    <string name="privacy_changes">이 방침이 변경되면 새로운 시행일과 함께 앱에 게시합니다.</string>
+    <string name="privacy_contact_t">문의처</string>
+    <string name="privacy_contact">이 방침에 관한 문의: %1$s</string>
+
+    <!-- 사용 설명서 -->
+    <string name="manual_title">사용 설명서</string>
+    <string name="manual_back">뒤로</string>
+    <string name="manual_how_t">PrayerGate 사용법</string>
+    <string name="manual_how">선택한 앱을 열면 PrayerGate가 먼저 영어 문제를 하나 보여 줘요. 문제를 푼 다음 \'닫기\'를 누르면 홈 화면으로, \'열기\'를 누르면 앱으로 이동해요. PrayerGate는 앱을 차단하지 않아요.</string>
+    <string name="manual_apps_t">앱 선택</string>
+    <string name="manual_apps">앱 탭에서 문제를 먼저 보여 줄 앱을 켜세요. 언제든지 바꿀 수 있어요.</string>
+    <string name="manual_answer_t">문제 풀기</string>
+    <string name="manual_answer">답을 탭하세요. 정답은 강조되고, 오답을 고르면 줄이 그어지며 정답이 함께 표시돼요. 이어서 짧은 해설이 나와요. 한국어 해설은 설정 > 해설에서 켤 수 있어요.</string>
+    <string name="manual_close_t">닫기와 열기</string>
+    <string name="manual_close">\'닫기\'는 홈 화면으로 이동하고 통계에 기록돼요. \'열기\'는 앱을 열어요. 1시간 안에 같은 앱을 3번 이상 열면 \'열기\' 버튼이 5초 뒤에 활성화되고, 5번째부터는 10초 뒤에 활성화돼요. \'닫기\'는 언제나 바로 누를 수 있어요.</string>
+    <string name="manual_cooldown_t">재알림 대기 시간</string>
+    <string name="manual_cooldown">앱 열기를 선택하면 1분, 5분 또는 15분 동안 같은 앱에서는 다시 묻지 않아요. 설정 > 재알림 대기 시간에서 바꿀 수 있어요.</string>
+    <string name="manual_timecheck_t">사용 시간 알림</string>
+    <string name="manual_timecheck">선택 기능이에요. 앱 열기를 선택한 뒤 5분, 15분 또는 30분 동안 계속 사용하면 문제가 한 번 더 나와요. 1분 미만으로 잠깐 나갔다 오면 시간이 이어서 계산돼요. 설정 > 사용 시간 알림에서 켤 수 있어요.</string>
+    <string name="manual_review_t">복습</string>
+    <string name="manual_review">틀린 문제는 정답, 해설과 함께 복습 탭에 저장돼요. \'복습하기\'를 눌러 다시 풀어 보세요. 맞히면 목록에서 사라져요.</string>
+    <string name="manual_stats_t">통계와 연속 기록</string>
+    <string name="manual_stats">연속 기록은 하루에 한 문제 이상 푼 날이 며칠 연속인지 보여 줘요. 통계에서는 푼 문제 수, 정답률, 닫은 횟수, 앱별 이번 주 기록도 볼 수 있어요.</string>
+    <string name="manual_level_t">난이도</string>
+    <string name="manual_level">설정에서 쉬움, 보통, 어려움 중에서 고를 수 있어요. 한 주에 20문제 이상 풀면, 정답률이 85% 이상일 때는 한 단계 위로, 50% 이하일 때는 한 단계 아래로 바꾸도록 통계에서 추천해 줘요.</string>
+    <string name="manual_widget_t">홈 화면 위젯</string>
+    <string name="manual_widget">홈 화면의 빈 곳을 길게 누르고 \'위젯\'을 탭한 다음 PrayerGate를 고르세요. 연속 기록과 오늘의 문제가 표시되고, 탭하면 바로 풀 수 있어요.</string>
+    <string name="manual_engines_t">감지 방식</string>
+    <string name="manual_engines">방식 A(사용 정보 접근)는 모든 휴대폰에서 작동하며 소리 없는 알림이 항상 표시돼요. 방식 B(접근성)는 보통 더 빨라요. 설정 > 감지 방식에서 바꿀 수 있고, 방식마다 필요한 권한은 그 아래에 표시돼요.</string>
+    <string name="manual_trouble_t">문제가 나오지 않을 때</string>
+    <string name="manual_trouble">1. 설정에서 \'이 방식에 필요한 권한\' 항목이 모두 \'완료\'인지 확인하세요.\n2. 삼성 휴대폰은 설정 > 배터리 > 백그라운드 사용 제한 > 절전 예외 앱에 PrayerGate를 추가하세요.\n3. 방식 B 스위치가 비활성화되어 있으면, 설정의 접근성 권한 아래에 있는 안내를 따라 주세요.</string>
+    <string name="manual_reset_t">처음부터 다시 시작</string>
+    <string name="manual_reset">설정 > PrayerGate 초기화를 누르면 모든 기록과 설정이 삭제되고 처음 설정부터 다시 시작해요. 허용한 권한은 그대로 유지되어 해당 단계는 건너뛰어요.</string>
+    <string name="manual_privacy_t">개인정보</string>
+    <string name="manual_privacy">PrayerGate는 계정이 없고 인터넷을 사용하지 않아요. 선택한 앱, 답한 기록, 통계는 모두 이 휴대폰에만 저장돼요. PrayerGate를 삭제하면 모든 데이터가 함께 삭제돼요.</string>
+    <string name="manual_language_t">언어</string>
+    <string name="manual_language">PrayerGate는 휴대폰 언어에 맞춰 한국어 또는 영어로 표시돼요. Android 13 이상에서는 설정 > 애플리케이션 > PrayerGate > 언어에서 PrayerGate만 다른 언어로 바꿀 수 있어요.</string>
+
+    <!-- 권한 -->
+    <string name="perm_allow">허용</string>
+    <string name="perm_done">완료</string>
+    <string name="perm_usage_title">사용 정보 접근</string>
+    <string name="perm_usage_reason">선택한 앱이 열리는 순간을 알기 위해 필요해요.</string>
+    <string name="perm_overlay_title">다른 앱 위에 표시</string>
+    <string name="perm_overlay_reason">연 앱 위에 문제를 띄우기 위해 필요해요.</string>
+    <string name="perm_notifications_title">알림</string>
+    <string name="perm_notifications_reason">PrayerGate가 작동하는 동안 조용한 알림 하나를 표시해요.</string>
+    <string name="perm_accessibility_title">접근성 서비스</string>
+    <string name="perm_accessibility_reason">화면 맨 앞에 있는 앱의 이름만 PrayerGate에 알려 줘요. 그 밖의 내용은 읽지 않아요.</string>
+
+    <!-- 접근성 스위치가 비활성화된 경우(제한된 설정) -->
+    <string name="restricted_title">스위치가 비활성화되어 있나요?</string>
+    <string name="restricted_body">Play 스토어가 아닌 곳에서 설치한 앱은, 따로 허용하기 전까지 Android가 접근성 사용을 막아요.</string>
+    <string name="restricted_step_1">먼저 PrayerGate를 한 번 켜 보세요. Android가 \"제한된 설정\" 메시지를 보여 줘요.</string>
+    <string name="restricted_step_2">앱 정보를 열고 오른쪽 위의 ⋮를 누른 다음 \"제한된 설정 허용\"을 누르세요.</string>
+    <string name="restricted_step_3">이 화면으로 돌아와 허용을 다시 누르고 PrayerGate를 켜세요.</string>
+    <string name="restricted_open_app_info">앱 정보 열기</string>
+
+    <string name="perm_battery_title">배터리 최적화 끄기</string>
+    <string name="perm_battery_reason">Android가 PrayerGate를 잠자기 상태로 만들지 않게 해요. 삼성 휴대폰에서는 \"절전 예외 앱\"에도 PrayerGate를 추가하세요.</string>
+
+    <!-- 접근성 안내(Google Play 필수) -->
+    <string name="disclosure_title">접근성 서비스를 켜기 전에</string>
+    <string name="disclosure_why_title">PrayerGate가 이 권한을 요청하는 이유</string>
+    <string name="disclosure_why_body">PrayerGate는 선택한 앱을 여는 순간을 알아차려 문제를 보여 주기 위해서만 Android 접근성 API를 사용해요.</string>
+    <string name="disclosure_what_title">읽는 정보</string>
+    <string name="disclosure_what_body">화면 맨 앞에 있는 앱의 이름만 읽어요. 예: \"Instagram\"</string>
+    <string name="disclosure_not_title">절대 읽지 않는 정보</string>
+    <string name="disclosure_not_body">메시지, 비밀번호, 입력하는 내용 등 화면에 보이는 내용은 절대 읽지 않아요. 이 서비스는 화면 내용에 접근할 수 없도록 만들어졌어요.</string>
+    <string name="disclosure_where_title">데이터가 저장되는 곳</string>
+    <string name="disclosure_where_body">앱 이름은 이 휴대폰에만 남아요. PrayerGate는 인터넷을 사용하지 않아서 어디에도 데이터를 보낼 수 없어요. 접근성 서비스는 Android 설정에서 언제든지 끌 수 있어요.</string>
+    <string name="disclosure_agree">동의하고 설정으로 이동</string>
+    <string name="disclosure_decline">나중에</string>
+    <string name="accessibility_service_label">PrayerGate</string>
+    <string name="accessibility_service_description">PrayerGate는 선택한 앱을 열 때 영어 문제를 보여 주기 위해, 화면 맨 앞에 있는 앱이 무엇인지만 확인해요. 화면의 내용은 읽지 않으며 어떤 데이터도 휴대폰 밖으로 보내지 않아요.</string>
+
+    <!-- 앱 선택 -->
+    <string name="apps_title">내 앱</string>
+    <string name="apps_subtitle">문제를 먼저 보여 줄 앱을 선택하세요.</string>
+    <plurals name="apps_chosen">
+        <item quantity="other">앱 %1$d개 선택됨</item>
+    </plurals>
+    <string name="apps_search">앱 검색</string>
+
+    <!-- 문제 화면. %1$s = 앱 이름 -->
+    <string name="question_header">%1$s 열기 전 한 문제</string>
+    <!-- %1$d = 분, %2$s = 앱 이름 -->
+    <string name="question_header_time">%2$s 사용 %1$d분째</string>
+    <!-- %1$s = 앱 이름, %2$d = 횟수 -->
+    <string name="question_header_repeat">%1$s · 최근 1시간 %2$d번째 실행</string>
+    <!-- %1$s = 앱 이름, %2$d = 남은 초 -->
+    <string name="question_continue_wait">%1$s 열기 (%2$d초)</string>
+    <string name="question_hint">문제를 먼저 풀어 주세요.</string>
+    <string name="question_wrong">오답!</string>
+    <string name="question_in_a_row">%1$d연속 정답!</string>
+    <string name="question_continue">%1$s 열기</string>
+    <string name="question_close">닫기</string>
+    <string name="question_right">정답!</string>
+
+    <!-- 복습 -->
+    <string name="review_title">복습</string>
+    <string name="review_subtitle">틀린 문제 목록이에요. 복습에서 맞히면 목록에서 사라져요.</string>
+    <string name="review_empty">복습할 문제가 없어요. 틀린 문제가 여기에 모여요.</string>
+    <plurals name="review_practise">
+        <item quantity="other">%1$d문제 복습하기</item>
+    </plurals>
+    <string name="review_card_label">%1$s · %2$s</string>
+    <string name="review_answer_prefix">정답:</string>
+    <plurals name="practice_header">
+        <item quantity="other">복습 · %1$d문제 남음</item>
+    </plurals>
+    <string name="practice_header_none">연습 모드</string>
+    <string name="practice_next">다음 문제</string>
+    <string name="practice_done">완료</string>
+
+    <!-- 난이도 제안. %1$d = 정답률, %2$s = 현재 난이도 / 본문의 %1$s = 제안 난이도 -->
+    <string name="advice_up_title">이번 주 \'%2$s\' 정답률 %1$d%%</string>
+    <string name="advice_up_body">\'%1$s\' 난이도에 도전해 볼까요? 설정에서 언제든 바꿀 수 있어요.</string>
+    <string name="advice_down_title">이번 주 \'%2$s\' 정답률 %1$d%%</string>
+    <string name="advice_down_body">당분간 \'%1$s\' 난이도로 해 볼까요? 설정에서 언제든 바꿀 수 있어요.</string>
+    <!-- 쉬움, 보통, 어려움은 모두 받침으로 끝나서 "으로"가 맞아요. -->
+    <string name="advice_switch">\'%1$s\'으로 변경</string>
+    <string name="advice_not_now">나중에</string>
+
+    <!-- 문제 유형과 난이도 -->
+    <string name="type_vocabulary">어휘</string>
+    <string name="type_grammar">문법</string>
+    <string name="type_both">전체</string>
+    <string name="difficulty_easy">쉬움</string>
+    <string name="difficulty_medium">보통</string>
+    <string name="difficulty_hard">어려움</string>
+
+    <!-- 통계 -->
+    <string name="stats_title">내 기록</string>
+    <string name="stats_empty">아직 푼 문제가 없어요. 선택한 앱을 열면 첫 문제가 나타나요.</string>
+    <plurals name="stats_streak_label">
+        <item quantity="other">일 연속</item>
+    </plurals>
+    <string name="stats_streak_start">오늘 한 문제를 풀고 연속 기록을 시작하세요.</string>
+    <string name="stats_answered">푼 문제 수</string>
+    <string name="stats_correct">정답률</string>
+    <string name="stats_percent">%1$d%%</string>
+    <string name="stats_closes">닫은 횟수</string>
+    <string name="stats_by_app">이번 주 앱별 기록</string>
+    <!-- %1$d = 닫은 횟수, %2$d = 멈춘 횟수 -->
+    <plurals name="stats_app_closed">
+        <item quantity="other">%2$d회 중 %1$d회 닫음</item>
+    </plurals>
+
+    <!-- 설정 -->
+    <string name="settings_title">설정</string>
+    <string name="settings_difficulty">난이도</string>
+    <string name="settings_type">문제 유형</string>
+    <string name="settings_cooldown">재알림 대기 시간</string>
+    <string name="settings_cooldown_hint">앱 열기를 선택하면 이 시간 동안 같은 앱에서는 다시 묻지 않아요.</string>
+    <string name="cooldown_minutes">%1$d분</string>
+    <string name="settings_explanations">해설</string>
+    <string name="explanations_english">영어</string>
+    <string name="explanations_with_korean">영어 + 한국어</string>
+    <string name="settings_time_check">사용 시간 알림</string>
+    <string name="time_check_off">사용 안 함</string>
+    <string name="settings_time_check_hint">앱 열기를 선택한 뒤 이 시간 동안 계속 사용하면 문제가 한 번 더 나와요. 1분 미만으로 잠깐 나갔다 오면 시간이 이어서 계산돼요.</string>
+    <string name="settings_engine">감지 방식</string>
+    <string name="engine_usage_title">방식 A: 사용 정보 접근</string>
+    <string name="engine_usage_description">1초에 약 세 번 실행 중인 앱을 확인해요. 상단바에 알림이 항상 표시돼요.</string>
+    <string name="engine_accessibility_title">방식 B: 접근성</string>
+    <string name="engine_accessibility_description">앱이 열리는 순간 Android가 바로 알려 줘서 보통 더 빨라요. 앱 이름만 읽어요.</string>
+    <string name="settings_permissions">이 방식에 필요한 권한</string>
+    <string name="settings_version">PrayerGate %1$s</string>
+
+    <!-- 홈 화면 위젯 -->
+    <string name="widget_name">PrayerGate</string>
+    <string name="widget_description">연속 기록과 오늘의 문제</string>
+    <string name="widget_today">오늘의 문제</string>
+    <string name="widget_tap">탭하여 풀기</string>
+
+    <!-- 알림(방식 A) -->
+    <string name="notification_channel_name">앱 감지</string>
+    <string name="notification_title">PrayerGate 실행 중</string>
+    <string name="notification_text">선택한 앱의 실행을 감지하고 있어요.</string>
+
+    <!-- 숨겨진 디버그 화면 -->
+    <string name="debug_title">디버그</string>
+    <string name="debug_all">두 방식 모두</string>
+    <string name="debug_count">실행 횟수</string>
+    <string name="debug_median">지연 시간 중앙값</string>
+    <string name="debug_p90">지연 시간 90번째 백분위수</string>
+    <string name="debug_ms">%1$dms</string>
+    <string name="debug_no_data">데이터 없음</string>
+    <string name="debug_clear">기록 지우기</string>
+    <string name="debug_back">설정으로 돌아가기</string>
+    <string name="debug_time_checks">사용 시간 알림: %1$d회 (위 지연 시간에는 포함되지 않음)</string>
+    <string name="debug_log">실행 기록</string>
+    <string name="debug_right">정답</string>
+    <string name="debug_wrong">오답</string>
+    <string name="debug_no_answer">미응답</string>
+</resources>

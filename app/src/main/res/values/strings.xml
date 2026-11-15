@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Every piece of text the user can see lives in this file.
+    To add Korean: copy this file to res/values-ko/strings.xml and translate
+    the text between the tags. Keep the name="..." parts and %1$s / %1$d
+    placeholders exactly as they are.
+    (The questions themselves are in assets/questions.json and stay in English,
+    because English is what the user is practising.)
+-->
+<resources>
+    <string name="app_name">PrayerGate</string>
+
+    <!-- Bottom tabs -->
+    <string name="tab_apps">Apps</string>
+    <string name="tab_review">Review</string>
+    <string name="tab_stats">Stats</string>
+    <string name="tab_settings">Settings</string>
+
+    <!-- Onboarding -->
+    <string name="onboarding_title">One English question before you scroll.</string>
+    <string name="onboarding_body_1">Pick the apps that eat your time. When you open one, PrayerGate pauses you with a single vocabulary or grammar question.</string>
+    <string name="onboarding_body_2">Answer it, then decide: continue to the app, or close it and get on with your day. Nothing is ever blocked.</string>
+    <string name="onboarding_body_3">No account and no internet. Everything stays on this phone.</string>
+    <!-- One short word shown very large and pale at the top of the welcome screen. Keep it short. -->
+    <string name="onboarding_word" translatable="false">pause</string>
+    <string name="onboarding_next">Get started</string>
+
+    <!-- Setup steps (one thing per screen) -->
+    <!-- %1$d = this step, %2$d = number of steps -->
+    <string name="ob_step">Step %1$d of %2$d</string>
+    <string name="ob_open_settings">Open settings</string>
+    <string name="ob_continue">Continue</string>
+    <string name="ob_find_switch">On the next screen, find PrayerGate and switch it on. PrayerGate comes back here by itself.</string>
+    <string name="ob_tap_allow">Tap Allow on the pop-up.</string>
+    <string name="ob_overlay_title">Let PrayerGate appear over other apps.</string>
+    <string name="ob_overlay_body">This lets your question appear the moment you open an app.</string>
+    <string name="ob_usage_title">Let PrayerGate see which app is open.</string>
+    <string name="ob_usage_body">PrayerGate reads only the app\'s name, never what is on your screen.</string>
+    <string name="ob_notifications_title">Allow notifications.</string>
+    <string name="ob_notifications_body">Android shows one silent notification while PrayerGate is running.</string>
+    <string name="ob_battery_title">Keep PrayerGate running.</string>
+    <string name="ob_battery_body">Otherwise Android may stop PrayerGate to save battery, and your questions stop appearing.</string>
+    <string name="ob_apps_pick_one">Choose at least one app</string>
+    <string name="ob_apps_done">Done</string>
+    <string name="ob_ready_title">All set.</string>
+    <!-- %1$s = the name of an app the user chose -->
+    <string name="ob_ready_body">Open %1$s now to see your first question.</string>
+    <string name="ob_ready_tip">You can change your apps, difficulty and more at any time. Settings also has a user guide.</string>
+    <string name="ob_finish">Start using PrayerGate</string>
+    <string name="apps_suggested">Suggested</string>
+    <string name="apps_all">All apps</string>
+
+    <!-- Settings: Help and Data -->
+    <string name="settings_help">Help</string>
+    <string name="manual_open">User guide</string>
+    <string name="manual_open_desc">How PrayerGate works, every setting, and fixes for common problems.</string>
+    <string name="settings_data">Data</string>
+    <string name="reset_title">Reset PrayerGate</string>
+    <string name="reset_desc">Delete all records and settings, and start setup again.</string>
+    <string name="reset_confirm_title">Reset PrayerGate?</string>
+    <string name="reset_confirm_body">This deletes your chosen apps, answers, review list, stats, streak and settings, and starts setup again. It cannot be undone. Permissions you allowed in Android settings stay on.</string>
+    <string name="reset_confirm">Reset</string>
+    <string name="reset_cancel">Cancel</string>
+
+    <!-- About and legal (Settings > Help) -->
+    <string name="legal_title">About &amp; legal</string>
+    <string name="legal_desc">Privacy policy, open-source licences, trademarks.</string>
+    <string name="licences_title">Open-source licences</string>
+    <string name="licences_intro">PrayerGate is built with these open-source components. Tap one to read its licence.</string>
+    <string name="trademarks_t">Trademarks</string>
+    <string name="trademarks">Instagram, TikTok, YouTube and other app names shown in PrayerGate are trademarks of their owners. PrayerGate is not affiliated with or endorsed by them.</string>
+    <!-- Contact for privacy questions, e.g. an email address. Google Play expects one.
+         While empty, the Contact section is not shown. -->
+    <string name="legal_contact" translatable="false"></string>
+
+    <!-- Privacy policy -->
+    <string name="privacy_title">Privacy policy</string>
+    <string name="privacy_effective">Effective: %1$s</string>
+    <string name="privacy_date">15 November 2026</string>
+    <string name="privacy_summary_t">Summary</string>
+    <string name="privacy_summary">PrayerGate does not collect, upload or share any personal information. Everything it records stays on your phone.</string>
+    <string name="privacy_stored_t">What PrayerGate stores on your phone</string>
+    <string name="privacy_stored">The apps you choose; each time a question appears: the app\'s name, the time, how long the question took to appear, whether your answer was right, and whether you chose Close or Continue; your progress on each question; and your settings. This is kept in PrayerGate\'s private storage, which other apps cannot read.</string>
+    <string name="privacy_read_t">What PrayerGate reads</string>
+    <string name="privacy_read">To know when you open a chosen app, PrayerGate reads the name of the app in front, using Android\'s usage access or accessibility service (you choose which in Settings). It never reads what is on your screen, what you type, your messages or your passwords.</string>
+    <string name="privacy_sent_t">What leaves your phone</string>
+    <string name="privacy_sent">Nothing. PrayerGate has no internet permission, no account, no advertising, no analytics and no third-party services. Android backup is turned off for PrayerGate, so its data is not copied to the cloud.</string>
+    <string name="privacy_delete_t">Deleting your data</string>
+    <string name="privacy_delete">Settings > Reset PrayerGate deletes all records and settings. Uninstalling PrayerGate deletes everything it stored.</string>
+    <string name="privacy_children_t">Children</string>
+    <string name="privacy_children">PrayerGate collects no personal information from anyone, including children.</string>
+    <string name="privacy_changes_t">Changes</string>
+    <string name="privacy_changes">If this policy changes, the new version will appear in the app with a new effective date.</string>
+    <string name="privacy_contact_t">Contact</string>
+    <string name="privacy_contact">Questions about this policy: %1$s</string>
+
+    <!-- User guide -->
+    <string name="manual_title">User guide</string>
+    <string name="manual_back">Back</string>
+    <string name="manual_how_t">How PrayerGate works</string>
+    <string name="manual_how">When you open an app you chose, PrayerGate shows one English question first. Answer it, then tap Close to go to your home screen, or Continue to open the app. PrayerGate never blocks an app.</string>
+    <string name="manual_apps_t">Choosing apps</string>
+    <string name="manual_apps">Open the Apps tab and switch on the apps that should start with a question. You can change this at any time.</string>
+    <string name="manual_answer_t">Answering</string>
+    <string name="manual_answer">Tap an answer. The right one lights up. If you pick a wrong one, it is crossed out and the right one is shown. A short explanation follows. For explanations in Korean, go to Settings > Explanations.</string>
+    <string name="manual_close_t">Close or Continue</string>
+    <string name="manual_close">Close takes you to the home screen and counts in Stats. Continue opens the app. If you open the same app 3 times within an hour, Continue waits 5 seconds (10 seconds from the 5th time). Close always works straight away.</string>
+    <string name="manual_cooldown_t">Cooldown</string>
+    <string name="manual_cooldown">After you continue to an app, PrayerGate does not ask again for that app for 1, 5 or 15 minutes. Change it in Settings > Cooldown.</string>
+    <string name="manual_timecheck_t">Time check</string>
+    <string name="manual_timecheck">Optional. If you keep using an app for 5, 15 or 30 minutes after continuing, PrayerGate asks another question. Leaving the app for less than a minute does not reset the clock. Turn it on in Settings > Time check.</string>
+    <string name="manual_review_t">Review</string>
+    <string name="manual_review">Questions you get wrong are saved in the Review tab with the answer and explanation. Tap Practise to try them again. A correct answer removes a question from the list.</string>
+    <string name="manual_stats_t">Stats and streak</string>
+    <string name="manual_stats">Your streak is the number of days in a row you answered at least one question. Stats also shows how many questions you answered, how many were right, how often you chose Close, and each app\'s week.</string>
+    <string name="manual_level_t">Difficulty</string>
+    <string name="manual_level">Choose Easy, Medium or Hard in Settings. After 20 answers in a week, Stats suggests moving up if you get 85% or more right, or down if you get 50% or less.</string>
+    <string name="manual_widget_t">Home-screen widget</string>
+    <string name="manual_widget">Touch and hold an empty part of your home screen, tap Widgets, then choose PrayerGate. It shows your streak and today\'s question. Tap it to answer.</string>
+    <string name="manual_engines_t">Detection engines</string>
+    <string name="manual_engines">Engine A (usage access) works on every phone and shows a permanent, silent notification. Engine B (accessibility) is usually faster. Switch in Settings > Detection engine. The permissions each engine needs are listed below it.</string>
+    <string name="manual_trouble_t">If questions stop appearing</string>
+    <string name="manual_trouble">1. In Settings, check that every item under Permissions for this engine shows Done.\n2. On Samsung phones, go to Settings > Battery > Background usage limits > Never sleeping apps and add PrayerGate.\n3. If the Engine B switch is greyed out, follow the steps shown under the accessibility permission in Settings.</string>
+    <string name="manual_reset_t">Starting over</string>
+    <string name="manual_reset">Settings > Reset PrayerGate deletes all records and settings and starts setup again. Permissions you allowed stay on, so setup skips those steps.</string>
+    <string name="manual_privacy_t">Privacy</string>
+    <string name="manual_privacy">PrayerGate has no account and no internet access. Your chosen apps, answers and stats stay on this phone. Uninstalling PrayerGate deletes all of it.</string>
+    <string name="manual_language_t">Language</string>
+    <string name="manual_language">PrayerGate uses your phone\'s language: Korean or English. On Android 13 and newer, you can choose a language for PrayerGate alone in Settings > Apps > PrayerGate > Language.</string>
+
+    <!-- Permissions -->
+    <string name="perm_allow">Allow</string>
+    <string name="perm_done">Done</string>
+    <string name="perm_usage_title">Usage access</string>
+    <string name="perm_usage_reason">So PrayerGate can tell when one of your chosen apps opens.</string>
+    <string name="perm_overlay_title">Display over other apps</string>
+    <string name="perm_overlay_reason">So the question can appear on top of the app you opened.</string>
+    <string name="perm_notifications_title">Notifications</string>
+    <string name="perm_notifications_reason">Shows one quiet notification while PrayerGate is watching.</string>
+    <string name="perm_accessibility_title">Accessibility service</string>
+    <string name="perm_accessibility_reason">Tells PrayerGate the name of the app in front. Nothing else is read.</string>
+    <!-- Help when Android blocks the accessibility switch ("Restricted setting"). -->
+    <string name="restricted_title">Switch greyed out?</string>
+    <string name="restricted_body">Android blocks accessibility for apps installed outside the Play Store until you allow it.</string>
+    <string name="restricted_step_1">Try to switch PrayerGate on once, so Android shows its "Restricted setting" message.</string>
+    <string name="restricted_step_2">Open App info, tap ⋮ in the top corner, then "Allow restricted settings".</string>
+    <string name="restricted_step_3">Come back here, tap Allow again, and switch PrayerGate on.</string>
+    <string name="restricted_open_app_info">Open App info</string>
+    <string name="perm_battery_title">Turn off battery optimization</string>
+    <string name="perm_battery_reason">Stops Android from putting PrayerGate to sleep. On Samsung, also add PrayerGate to \"Never sleeping apps\".</string>
+
+    <!-- Accessibility disclosure (required by Google Play) -->
+    <string name="disclosure_title">Before you turn on the accessibility service</string>
+    <string name="disclosure_why_title">Why PrayerGate asks for it</string>
+    <string name="disclosure_why_body">PrayerGate uses Android\'s Accessibility API only to notice when you open one of the apps you chose, so it can show your question.</string>
+    <string name="disclosure_what_title">What it reads</string>
+    <string name="disclosure_what_body">Only the name of the app that is in front, for example \"Instagram\".</string>
+    <string name="disclosure_not_title">What it never reads</string>
+    <string name="disclosure_not_body">It never reads what is on your screen: messages, passwords, typing, or anything else inside your apps. The service is built without access to screen content.</string>
+    <string name="disclosure_where_title">Where the data goes</string>
+    <string name="disclosure_where_body">The app name stays on this phone. PrayerGate has no internet access, so it cannot send anything anywhere. You can turn the service off at any time in Android settings.</string>
+    <string name="disclosure_agree">I agree, open settings</string>
+    <string name="disclosure_decline">Not now</string>
+    <string name="accessibility_service_label">PrayerGate</string>
+    <string name="accessibility_service_description">PrayerGate uses this service only to see which app is in front, so it can show an English question when you open an app you chose. It does not read anything on your screen, and no data leaves your phone.</string>
+
+    <!-- App picker -->
+    <string name="apps_title">Your apps</string>
+    <string name="apps_subtitle">Switch on the apps that should start with a question.</string>
+    <plurals name="apps_chosen">
+        <item quantity="one">%1$d app now starts with a question.</item>
+        <item quantity="other">%1$d apps now start with a question.</item>
+    </plurals>
+    <string name="apps_search">Search apps</string>
+
+    <!-- Question screen. %1$s is the app name, e.g. "Instagram". -->
+    <string name="question_header">A pause before %1$s</string>
+    <!-- Shown when the time check fires. %1$d = minutes, %2$s = app name, e.g. "15 min on Instagram". -->
+    <string name="question_header_time">%1$d min on %2$s</string>
+    <!-- Shown from the 3rd opening of the same app within an hour. %1$s = app, %2$d = times. -->
+    <string name="question_header_repeat">%1$s · opened %2$d times this hour</string>
+    <!-- The Continue button while it is waiting. %1$s = app, %2$d = seconds left. -->
+    <string name="question_continue_wait">Continue to %1$s in %2$d</string>
+    <string name="question_hint">Answer first, then choose where to go.</string>
+    <string name="question_wrong">Not quite.</string>
+    <string name="question_in_a_row">%1$d in a row</string>
+    <string name="question_continue">Continue to %1$s</string>
+    <string name="question_close">Close</string>
+    <!-- The verdict after answering. It ends in a full stop on purpose: the app colours it. -->
+    <string name="question_right">Correct.</string>
+
+    <!-- Review tab and practice mode -->
+    <string name="review_title">Review</string>
+    <string name="review_subtitle">Questions you got wrong. Answer one correctly in practice and it leaves this list.</string>
+    <string name="review_empty">Nothing to review. Questions you get wrong will appear here.</string>
+    <plurals name="review_practise">
+        <item quantity="one">Practise %1$d question</item>
+        <item quantity="other">Practise %1$d questions</item>
+    </plurals>
+    <!-- %1$s = question type, %2$s = level, e.g. "Vocabulary · Easy". -->
+    <string name="review_card_label">%1$s · %2$s</string>
+    <string name="review_answer_prefix">Answer:</string>
+    <plurals name="practice_header">
+        <item quantity="one">Review · %1$d left</item>
+        <item quantity="other">Review · %1$d left</item>
+    </plurals>
+    <string name="practice_header_none">Practice</string>
+    <string name="practice_next">Next question</string>
+    <string name="practice_done">Done</string>
+
+    <!-- Difficulty suggestion on the Stats screen. %1$d = percent, %2$s = current level, %1$s in the body = suggested level. -->
+    <string name="advice_up_title">You got %1$d%% right on %2$s this week.</string>
+    <string name="advice_up_body">Ready for %1$s? You can always switch back in Settings.</string>
+    <string name="advice_down_title">You got %1$d%% right on %2$s this week.</string>
+    <string name="advice_down_body">Try %1$s for a while? You can always switch back in Settings.</string>
+    <string name="advice_switch">Switch to %1$s</string>
+    <string name="advice_not_now">Not now</string>
+
+    <!-- The large pale word above each question. It stays in English in every
+         language on purpose: it is part of the design, and English is what is
+         being practised. -->
+    <string name="ghost_vocabulary" translatable="false">vocabulary</string>
+    <string name="ghost_grammar" translatable="false">grammar</string>
+
+    <!-- Question types and difficulty -->
+    <string name="type_vocabulary">Vocabulary</string>
+    <string name="type_grammar">Grammar</string>
+    <string name="type_both">Both</string>
+    <string name="difficulty_easy">Easy</string>
+    <string name="difficulty_medium">Medium</string>
+    <string name="difficulty_hard">Hard</string>
+
+    <!-- Stats -->
+    <string name="stats_title">Your progress</string>
+    <string name="stats_empty">No questions yet. Open one of your chosen apps and your first one will appear.</string>
+    <plurals name="stats_streak_label">
+        <item quantity="one">day streak</item>
+        <item quantity="other">day streak</item>
+    </plurals>
+    <string name="stats_streak_start">Answer one question today to start a streak.</string>
+    <string name="stats_answered">Questions answered</string>
+    <string name="stats_correct">Correct</string>
+    <string name="stats_percent">%1$d%%</string>
+    <string name="stats_closes">Times you chose Close</string>
+    <string name="stats_by_app">This week by app</string>
+    <!-- %1$d = times Close was chosen, %2$d = pauses; the plural follows %2$d. -->
+    <plurals name="stats_app_closed">
+        <item quantity="one">closed %1$d of %2$d</item>
+        <item quantity="other">closed %1$d of %2$d</item>
+    </plurals>
+
+    <!-- Settings -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_difficulty">Difficulty</string>
+    <string name="settings_type">Question type</string>
+    <string name="settings_cooldown">Cooldown</string>
+    <string name="settings_cooldown_hint">After you continue to an app, PrayerGate will not ask again for that app during this time.</string>
+    <string name="cooldown_minutes">%1$d min</string>
+    <string name="settings_explanations">Explanations</string>
+    <string name="explanations_english">English</string>
+    <!-- Keep "한국어" in Korean in every translation. -->
+    <string name="explanations_with_korean">English + 한국어</string>
+    <string name="settings_time_check">Time check</string>
+    <string name="time_check_off">Off</string>
+    <string name="settings_time_check_hint">If you stay in an app this long after continuing, PrayerGate asks another question. Stepping away for less than a minute does not reset the clock.</string>
+    <string name="settings_engine">Detection engine</string>
+    <string name="engine_usage_title">Engine A: Usage access</string>
+    <string name="engine_usage_description">Checks which app is open about three times a second. Shows a permanent notification.</string>
+    <string name="engine_accessibility_title">Engine B: Accessibility</string>
+    <string name="engine_accessibility_description">Android tells PrayerGate the moment an app opens, which is usually faster. It reads only the app name.</string>
+    <string name="settings_permissions">Permissions for this engine</string>
+    <string name="settings_version">PrayerGate %1$s</string>
+
+    <!-- Home-screen widget -->
+    <string name="widget_name">PrayerGate</string>
+    <string name="widget_description">Your streak and today\'s question.</string>
+    <string name="widget_today">Today\'s question</string>
+    <string name="widget_tap">Tap to answer</string>
+
+    <!-- Foreground service notification (Engine A) -->
+    <string name="notification_channel_name">App detection</string>
+    <string name="notification_title">PrayerGate is on</string>
+    <string name="notification_text">Watching for the apps you chose.</string>
+
+    <!-- Hidden debug screen -->
+    <string name="debug_title">Debug</string>
+    <string name="debug_all">Both engines</string>
+    <string name="debug_count">Triggers</string>
+    <string name="debug_median">Median delay</string>
+    <string name="debug_p90">90th percentile delay</string>
+    <string name="debug_ms">%1$d ms</string>
+    <string name="debug_no_data">No data</string>
+    <string name="debug_clear">Clear the log</string>
+    <string name="debug_back">Back to Settings</string>
+    <string name="debug_time_checks">Time checks: %1$d (not included in the delays above)</string>
+    <string name="debug_log">Trigger log</string>
+    <string name="debug_right">right</string>
+    <string name="debug_wrong">wrong</string>
+    <string name="debug_no_answer">no answer</string>
+</resources>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Launcher icon: a white serif W and one citron full stop, on lapis. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M50.79 44.64 42.53 67.64H40.79L32.91 42.08L30 41.23V40.66H41.51V41.23L38.18 42.04L44.22 62.46L43.05 62.99L50.95 40.36H52.86L61.29 62.52L60.38 62.59L65.77 42.12L62.33 41.23V40.66H70V41.23L67.14 42.17L60 67.64H58.26L49.49 45.39Z" />
+    <path
+        android:fillColor="#FFE4F45E"
+        android:pathData="M75,64.2 m-3.4,0 a3.4,3.4 0 1 0 6.8,0 a3.4,3.4 0 1 0 -6.8,0" />
+</vector>
