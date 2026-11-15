@@ -6,6 +6,13 @@ plugins {
 }
 
 android {
+    // The in-app language switch can show Korean on an English phone and the
+    // reverse, so Google Play must ship both languages to every device.
+    bundle {
+        language {
+            enableSplit = false
+        }
+    }
     // Robolectric runs the touch and detection tests (AmenHoldTest, OpenCountTest)
     // on the computer, without a phone.
     testOptions {
