@@ -29,6 +29,11 @@ import org.json.JSONObject
  *  2. Only react to apps the user picked.
  *  3. Respect the cooldown: after "Continue", the same app is left alone
  *     for the number of minutes chosen in Settings.
+ *  4. The prayer screen does not count as leaving the app underneath it.
+ *     While it is open, the app behind it may still report itself as
+ *     "in front" (for example when its splash screen hands over to its main
+ *     screen). That is the same visit, not a new open, so it must not
+ *     trigger another prayer or be logged again.
  *
  * The TIME CHECK (optional, set in Settings):
  *  While the user is in a chosen app (after praying), a clock
@@ -54,6 +59,10 @@ object GateController {
 
     /** The app that was in the foreground the last time an engine reported. */
     private var lastForeground: String? = null
+
+    /** The app whose prayer screen is open right now, or null (see rule 4). */
+    @Volatile
+    private var prayerOpenFor: String? = null
 
     /** For each package: the time (ms) until which we must not ask again. */
     private val cooldownUntil = HashMap<String, Long>()
@@ -155,6 +164,10 @@ object GateController {
     fun onForegroundApp(context: Context, packageName: String, openedAt: Long, engine: Engine) {
         lastEngine = engine
 
+        // Rule 4: the prayer screen itself is in front of the app it paused.
+        // The user has not left that app, so nothing changes.
+        if (packageName == context.packageName && prayerOpenFor != null) return
+
         // Rule 1: nothing changed, the user is still in the same app.
         if (packageName == lastForeground) return
         lastForeground = packageName
@@ -195,6 +208,7 @@ object GateController {
 
         Log.d(TAG, "Trigger for $packageName via $engine")
         timer.reset(packageName) // a prayer resets the time check
+        prayerOpenFor = packageName
         openPrayer(context, PrayerActivity.createIntent(context, packageName, openedAt, engine))
     }
 
@@ -213,9 +227,18 @@ object GateController {
         saveState()
     }
 
+    /**
+     * Called by the prayer screen for [packageName] when it closes, however it
+     * closes. A newer pause for another app keeps its own flag.
+     */
+    fun prayerClosed(packageName: String) {
+        if (prayerOpenFor == packageName) prayerOpenFor = null
+    }
+
     /** Forgets cooldowns, clocks and the last app seen (used by "Reset PrayerGate"). */
     @Synchronized
     fun forgetEverything() {
+        prayerOpenFor = null
         handler.removeCallbacks(timeUp)
         cooldownUntil.clear()
         timer.clear()
@@ -262,6 +285,7 @@ object GateController {
         timer.reset(packageName)
         saveState()
         Log.d(TAG, "Time check for $packageName after $minutesUsed min")
+        prayerOpenFor = packageName
         openPrayer(
             context,
             PrayerActivity.createIntent(
@@ -319,6 +343,7 @@ object GateController {
         } catch (e: Exception) {
             // Android refused to open the screen (usually a missing permission).
             Log.w(TAG, "Could not open the prayer screen", e)
+            prayerOpenFor = null
         }
     }
 }

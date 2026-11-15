@@ -16,7 +16,7 @@ English and Korean.
 
 ```
 ./gradlew installDebug     # build and install on a phone with USB debugging on
-./gradlew test             # unit tests (no phone needed)
+./gradlew test             # unit tests and Robolectric touch tests (no phone needed)
 ```
 
 Needs JDK 17+ and Android SDK platform 35. Runs on Android 8.0+. Debug builds

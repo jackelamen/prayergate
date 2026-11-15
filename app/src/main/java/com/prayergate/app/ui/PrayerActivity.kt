@@ -77,6 +77,7 @@ import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import com.prayergate.app.PrayerGateApp
 import com.prayergate.app.R
 import com.prayergate.app.data.Engine
@@ -195,9 +196,18 @@ class PrayerActivity : ComponentActivity() {
         }
     }
 
-    /** Called if a new trigger arrives while this screen already exists: start over. */
+    /**
+     * Called if a new trigger arrives while this screen already exists.
+     * Another report for the app this screen is already pausing is the same
+     * visit, so the prayer being read stays and nothing is logged twice.
+     * A trigger for a different app (or a time check) starts over.
+     */
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
+        val samePause = !quiet &&
+            intent.getStringExtra(EXTRA_PACKAGE) == targetPackage &&
+            intent.getStringExtra(EXTRA_REASON) == reason
+        if (samePause) return
         setIntent(intent)
         readIntent(intent)
         prayer = null
@@ -343,6 +353,11 @@ class PrayerActivity : ComponentActivity() {
         if (!isFinishing && !isChangingConfigurations && screenIsOn) finish()
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        if (!quiet && !isChangingConfigurations) GateController.prayerClosed(targetPackage)
+    }
+
     /** "com.instagram.android" -> "Instagram". */
     private fun appLabel(packageName: String): String = try {
         packageManager.getApplicationLabel(packageManager.getApplicationInfo(packageName, 0)).toString()
@@ -398,8 +413,9 @@ class PrayerActivity : ComponentActivity() {
 /** How long Amen must be held, in milliseconds. */
 private const val HOLD_MILLIS = 1500
 
+/** Internal (not private) so AmenHoldTest can draw it and press Amen. */
 @Composable
-private fun PrayerScreen(
+internal fun PrayerScreen(
     header: String,
     prayer: Prayer?,
     korean: Boolean,
@@ -604,9 +620,14 @@ private fun Exits(
         label = "amen",
     )
     Box(contentAlignment = Alignment.Center, modifier = modifier) {
+        // The two layers share one place. Whichever is active sits on top
+        // (zIndex), because the one on top receives the touches: a hidden,
+        // disabled button still swallows a press, so Close and Continue must
+        // be underneath Amen until Amen is done.
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
+                .zIndex(if (prayed) 0f else 1f)
                 .graphicsLayer { alpha = amenShown }
                 .then(if (prayed) Modifier.clearAndSetSemantics { } else Modifier),
         ) {
@@ -628,6 +649,7 @@ private fun Exits(
         }
         Column(
             modifier = Modifier
+                .zIndex(if (prayed) 1f else 0f)
                 .graphicsLayer {
                     alpha = buttonsShown
                     translationY = (1f - buttonsShown) * 16.dp.toPx()
