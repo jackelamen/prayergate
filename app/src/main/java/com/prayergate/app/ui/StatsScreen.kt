@@ -51,7 +51,7 @@ import com.prayergate.app.data.AppWeek
 import com.prayergate.app.data.prayedDays
 import com.prayergate.app.data.weekByApp
 import com.prayergate.app.data.computeStats
-import com.prayergate.app.ui.theme.Olive
+import com.prayergate.app.ui.theme.LocalGilt
 import com.prayergate.app.ui.theme.LocalAccent
 import java.time.LocalDate
 import java.time.format.TextStyle
@@ -102,28 +102,25 @@ fun StatsScreen() {
             return@Column
         }
 
-        // --- The hero: the daily streak, on an olive card ---
+        // --- The hero: the daily streak, on a framed page ---
         Spacer(Modifier.height(24.dp))
         val streak by animateIntAsState(
             if (started) stats.streakDays else 0, tween(1000, easing = FastOutSlowInEasing), label = "streak",
         )
-        OliveGround(
+        PageGround(
             modifier = Modifier
                 .fillMaxWidth()
-                .shadow(18.dp, MaterialTheme.shapes.large, ambientColor = Olive, spotColor = Olive)
+                .card(MaterialTheme.shapes.large)
                 .clip(MaterialTheme.shapes.large),
             fullScreen = false,
         ) {
-            Column(Modifier.padding(start = 26.dp, end = 26.dp, top = 26.dp, bottom = 28.dp)) {
+            Column(Modifier.padding(start = 30.dp, end = 30.dp, top = 26.dp, bottom = 30.dp)) {
                 Text(
                     streak.toString(),
                     style = MaterialTheme.typography.displayLarge,
                     color = MaterialTheme.colorScheme.onBackground,
                 )
-                SectionLabel(
-                    pluralStringResource(R.plurals.stats_streak_label, stats.streakDays),
-                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.75f),
-                )
+                SectionLabel(pluralStringResource(R.plurals.stats_streak_label, stats.streakDays))
                 Spacer(Modifier.height(28.dp))
                 WeekDots(days)
             }
@@ -164,12 +161,12 @@ fun StatsScreen() {
 }
 
 /**
- * The last seven days, shown on the olive card. A filled gold dot = prayed
+ * The last seven days, shown on the streak card. A filled gilt dot = prayed
  * that day; an empty ring = no prayer. The dots appear one after another.
  */
 @Composable
 private fun WeekDots(activeDays: Set<LocalDate>) {
-    val accent = LocalAccent.current.accent
+    val accent = LocalGilt.current
     val today = LocalDate.now()
     var shown by remember { mutableStateOf(false) }
     LaunchedEffect(Unit) { shown = true }

@@ -1,38 +1,39 @@
 #!/usr/bin/env python3
 """
-Writes the flame icons as Android vector drawables:
+Writes the cross icons as Android vector drawables:
 
-  app/src/main/res/drawable/ic_launcher_foreground.xml  gold flame + pale core (on olive, see ic_launcher.xml)
-  app/src/main/res/drawable/ic_launcher_monochrome.xml  the flame alone (themed icons, Android 13+)
-  app/src/main/res/drawable/ic_notification.xml         white flame (notifications must be white)
-  app/src/main/res/drawable/widget_flame.xml            small gold flame on the widget
+  app/src/main/res/drawable/ic_launcher_foreground.xml  gilt cross (on crimson, see ic_launcher.xml)
+  app/src/main/res/drawable/ic_launcher_monochrome.xml  the cross alone (themed icons, Android 13+)
+  app/src/main/res/drawable/ic_notification.xml         white cross (notifications must be white)
+  app/src/main/res/drawable/widget_cross.xml            small red cross on the widget
 
 Run from the project root:   python3 tools/make_icons.py
 
-The outline is the same as flamePath() in ui/Components.kt. If you change
+The outline is the same as crossPath() in ui/Components.kt. If you change
 one, change the other.
 """
 import os
 
-GOLD = "#FFE8B84A"
-CORE = "#FFFFF1D2"
+GILT = "#FFE2B657"
+RUBRIC = "#FFA0231C"
 WHITE = "#FFFFFFFF"
 RES = os.path.join(os.path.dirname(__file__), "..", "app", "src", "main", "res", "drawable")
 
 
-def flame(left, top, w):
-    """SVG path data for the flame in a box w wide and 1.5 w tall."""
-    h = w * 1.5
-    x = lambda f: round(left + w * f, 2)
-    y = lambda f: round(top + h * f, 2)
-    return (
-        f"M{x(.62)},{y(0)} "
-        f"C{x(.70)},{y(.18)} {x(.92)},{y(.36)} {x(.92)},{y(.64)} "
-        f"C{x(.92)},{y(.86)} {x(.73)},{y(1)} {x(.5)},{y(1)} "
-        f"C{x(.27)},{y(1)} {x(.08)},{y(.86)} {x(.08)},{y(.64)} "
-        f"C{x(.08)},{y(.46)} {x(.26)},{y(.36)} {x(.40)},{y(.24)} "
-        f"C{x(.50)},{y(.15)} {x(.58)},{y(.09)} {x(.62)},{y(0)} Z"
-    )
+def cross(left, top, h):
+    """SVG path data for the cross in a box h tall and 0.68 h wide."""
+    w = h * 0.68
+    cx = left + w / 2
+    cy = top + h * 0.32
+    b = h * 0.075
+    a = h * 0.115
+    pts = [
+        (cx - a, top), (cx + a, top), (cx + b, cy - b),
+        (left + w, cy - a), (left + w, cy + a), (cx + b, cy + b),
+        (cx + a, top + h), (cx - a, top + h), (cx - b, cy + b),
+        (left, cy + a), (left, cy - a), (cx - b, cy - b),
+    ]
+    return "M" + " L".join(f"{round(x, 2)},{round(y, 2)}" for x, y in pts) + " Z"
 
 
 def vector(comment, width_dp, height_dp, vw, vh, paths):
@@ -58,18 +59,18 @@ def write(name, text):
 
 def main():
     # Launcher: 108 x 108 viewport; everything stays inside the 66 dp safe circle.
-    outer = flame(39, 31.5, 30)      # 30 wide, 45 tall, centred
-    core = flame(47.5, 51, 13)       # a smaller flame sitting low inside it
+    h = 46
+    outer = cross(54 - h * 0.34, 54 - h / 2, h)
     write("ic_launcher_foreground.xml", vector(
-        "Launcher icon: the lamp flame in gold with a pale core, on olive.", 108, 108, 108, 108,
-        [(GOLD, outer), (CORE, core)]))
+        "Launcher icon: a gilt cross on crimson, like the cover of a Bible.", 108, 108, 108, 108,
+        [(GILT, outer)]))
     write("ic_launcher_monochrome.xml", vector(
-        "Themed launcher icon: the flame alone.", 108, 108, 108, 108, [(WHITE, outer)]))
+        "Themed launcher icon: the cross alone.", 108, 108, 108, 108, [(WHITE, outer)]))
     write("ic_notification.xml", vector(
-        "Notification icon: the flame, white on transparent.", 24, 24, 24, 24,
-        [(WHITE, flame(6.5, 2.25, 13))]))
-    write("widget_flame.xml", vector(
-        "The small gold flame on the widget.", 8, 12, 8, 12, [(GOLD, flame(0, 0, 8))]))
+        "Notification icon: the cross, white on transparent.", 24, 24, 24, 24,
+        [(WHITE, cross(12 - 20 * 0.34, 2, 20))]))
+    write("widget_cross.xml", vector(
+        "The small red cross on the widget.", 9, 13, 9, 13, [(RUBRIC, cross(0.08, 0.2, 12.6))]))
 
 
 if __name__ == "__main__":

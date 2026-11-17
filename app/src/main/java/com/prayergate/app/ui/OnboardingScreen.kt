@@ -55,6 +55,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import com.prayergate.app.R
 
@@ -182,8 +183,8 @@ private fun StepLayout(
                     verticalAlignment = Alignment.Top,
                     modifier = Modifier.fillMaxWidth().card().padding(18.dp),
                 ) {
-                    Flame(Modifier.padding(top = 0.dp))
-                    Spacer(Modifier.width(6.dp))
+                    Cross(size = 24.dp)
+                    Spacer(Modifier.width(8.dp))
                     Text(how, style = MaterialTheme.typography.bodyLarge, color = MaterialTheme.colorScheme.onSurface)
                 }
             }
@@ -311,20 +312,20 @@ private fun ReadyStep(onFinished: () -> Unit) {
     val selected by dao.observeAll().collectAsStateWithLifecycle(initialValue = emptyList())
     val firstApp = selected.firstOrNull()?.packageName?.let { appLabel(context, it) } ?: ""
 
-    OliveGround(Modifier.fillMaxSize()) {
-        val softWhite = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.78f)
+    PageGround(Modifier.fillMaxSize()) {
+        val softWhite = MaterialTheme.colorScheme.onSurfaceVariant
         Column(
             Modifier
                 .fillMaxSize()
                 .systemBarsPadding()
                 .readableWidth()
-                .padding(horizontal = 28.dp, vertical = 16.dp),
+                .padding(horizontal = 36.dp, vertical = 20.dp),
         ) {
             Column(
                 verticalArrangement = Arrangement.Center,
                 modifier = Modifier.weight(1f).fillMaxWidth().verticalScroll(rememberScrollState()),
             ) {
-                Flame(breathing = true)
+                Cross(breathing = true, size = 44.dp)
                 Spacer(Modifier.height(16.dp))
                 Text(
                     stringResource(R.string.ob_ready_title),
@@ -387,72 +388,76 @@ private fun appLabel(context: Context, packageName: String): String = try {
 }
 
 /**
- * Step 0: the first thing a new user sees. One big sentence on the olive
- * ground, under the breathing flame.
+ * Step 0: the first thing a new user sees, set like the title page of a
+ * prayer book: the cross, the name as a red rubric, one sentence, and the
+ * verse the app is built on (Matthew 26:41). The language switch sits at the
+ * top, for people who need the other language before they can find Settings.
  */
 @Composable
 private fun WelcomeStep(onNext: () -> Unit) {
-    OliveGround(Modifier.fillMaxSize()) {
-        val softWhite = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.78f)
+    PageGround(Modifier.fillMaxSize()) {
+        val soft = MaterialTheme.colorScheme.onSurfaceVariant
+        val korean = LocalConfiguration.current.locales[0].language == "ko"
         Column(
             Modifier
                 .fillMaxSize()
                 .systemBarsPadding()
                 .readableWidth()
-                .padding(horizontal = 28.dp),
+                .padding(horizontal = 36.dp),
         ) {
-            // The flame, the name of the app (small) and the language switch.
-            // On a very narrow screen with large text the name would be cut
-            // off mid-word, so there it is left out and the switch stays.
-            BoxWithConstraints(Modifier.fillMaxWidth().height(64.dp)) {
-                val showName = maxWidth.value / LocalDensity.current.fontScale >= 230f
-                Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxSize()) {
-                    Flame(breathing = true)
-                    Spacer(Modifier.width(8.dp))
-                    if (showName) {
-                        SectionLabel(stringResource(R.string.app_name), color = MaterialTheme.colorScheme.onBackground, modifier = Modifier.weight(1f))
-                    } else {
-                        Spacer(Modifier.weight(1f))
-                    }
-                    LanguageToggle()
-                }
+            Row(Modifier.fillMaxWidth().padding(top = 14.dp), horizontalArrangement = Arrangement.End) {
+                LanguageToggle()
             }
 
             Column(
-                verticalArrangement = Arrangement.Bottom,
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.weight(1f).fillMaxWidth().verticalScroll(rememberScrollState()),
             ) {
-                // The large pale word sits directly above the headline, in the
-                // same flow, so it can never overlap it on short screens.
-                GhostWord(stringResource(R.string.onboarding_word), fontSize = 110.sp, fitWidth = true, modifier = Modifier.offset(x = (-4).dp))
+                val tight = LocalConfiguration.current.let { it.screenHeightDp < 700 || it.fontScale > 1.15f }
+                Cross(breathing = true, size = if (tight) 40.dp else 56.dp)
+                Spacer(Modifier.height(if (tight) 8.dp else 14.dp))
+                SectionLabel(stringResource(R.string.app_name))
+                Spacer(Modifier.height(20.dp))
                 // The headline is a little smaller on narrow screens (Z Fold cover, small phones).
                 BoxWithConstraints(Modifier.fillMaxWidth()) {
-                    val narrow = maxWidth < 360.dp
-                    val korean = LocalConfiguration.current.locales[0].language == "ko"
+                    val narrow = maxWidth < 300.dp || tight
                     Text(
                         stringResource(R.string.onboarding_title),
                         style = MaterialTheme.typography.headlineLarge.copy(
-                            fontSize = if (narrow) 40.sp else 50.sp,
-                            lineHeight = if (narrow) 46.sp else 56.sp,
-                            letterSpacing = if (korean) 0.sp else (-1.2).sp,
+                            fontSize = if (narrow) 36.sp else 44.sp,
+                            lineHeight = if (narrow) 42.sp else 50.sp,
+                            letterSpacing = if (korean) 0.sp else (-0.6).sp,
                         ),
                         color = MaterialTheme.colorScheme.onBackground,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxWidth(),
                     )
                 }
-                Spacer(Modifier.height(28.dp))
+                Spacer(Modifier.height(20.dp))
+                Box(Modifier.width(44.dp).height(1.dp).background(LocalAccent.current.accent.copy(alpha = 0.8f)))
+                Spacer(Modifier.height(16.dp))
+                Text(
+                    stringResource(R.string.onboarding_verse),
+                    style = MaterialTheme.typography.labelSmall,
+                    color = soft,
+                    textAlign = TextAlign.Center,
+                )
+                SectionLabel(stringResource(R.string.onboarding_verse_ref), modifier = Modifier.padding(top = 6.dp))
+                Spacer(Modifier.height(26.dp))
                 // Three short paragraphs: what happens, what you decide, where the data lives.
                 for (text in listOf(R.string.onboarding_body_1, R.string.onboarding_body_2, R.string.onboarding_body_3)) {
                     Text(
                         stringResource(text),
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = softWhite,
-                        modifier = Modifier.padding(bottom = 14.dp),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = soft,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.padding(bottom = 10.dp),
                     )
                 }
-                Spacer(Modifier.height(12.dp))
             }
 
-            PrimaryButton(stringResource(R.string.onboarding_next), onClick = onNext, modifier = Modifier.padding(vertical = 16.dp))
+            PrimaryButton(stringResource(R.string.onboarding_next), onClick = onNext, modifier = Modifier.padding(top = 12.dp, bottom = 24.dp))
         }
     }
 }

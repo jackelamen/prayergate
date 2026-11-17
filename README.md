@@ -32,7 +32,8 @@ an update over the old one and keeps the user's data.
 3. The Amen button fills faintly while the prayer is read (a fifth of a second
    per word, at least 4 s), then turns white. Holding it for 1.5 s fills it
    with gold. TalkBack users double-tap instead.
-4. Amen: the header flame glows, a wash of lamplight rises, one haptic.
+4. Amen: "Amen." appears in red at the end of the prayer, the cross turns
+   gold, a wash of gilt light rises, one haptic.
    Close (solid) and Continue (quiet) fade in where Amen was.
 5. Continue starts a cooldown (1, 5 or 15 min). From the 3rd opening of the
    same app in an hour, Continue waits 5 s; from the 5th, 10 s. Close and the
@@ -44,27 +45,38 @@ Breaks under a minute don't reset the clock.
 ## Content
 
 80 prayers, 10 per theme, written for this app in English and Korean
-(Korean uses 하나님 and the reverent -소서 form). Each names a Bible passage
-to look up; no translation's text is reproduced except two short quotations
-of John 21:22 from the KJV and 개역한글 (1961), both public domain.
+(Korean uses 하나님 and the reverent -소서 form). Each prayer takes up the
+words of one Bible passage, and the passage itself is printed under the
+prayer: World English Bible (public domain) and 개역한글 (1961, copyright term
+ended). So "Set a watch before my mouth" sits above Psalm 141:3, "Set a watch,
+Yahweh, before my mouth."
 
-Edit `tools/make_prayers.py` and run it to rebuild `app/src/main/assets/prayers.json`.
-It checks counts, duplicates, length, references and em dashes. Never renumber
-existing prayers: saved prayers are keyed by id.
+- `tools/make_prayers.py`: the prayers and their references. Run it to rebuild
+  `app/src/main/assets/prayers.json`. It checks counts, duplicates, length,
+  references, em dashes, and that every reference has its verse text, and it
+  sets curly quotes. Never renumber existing prayers: saved prayers are keyed by id.
+- `tools/fetch_verses.py`: downloads the verse text for every reference into
+  `tools/verses.json` (needs internet; the app build does not). Run it after
+  adding or changing a reference.
 
 ## Design
 
-The idea is "Watch and pray" (Matthew 26:41), in the olive garden: a small lamp
-kept lit before you scroll. One feeling: watchful calm.
+A printed prayer book: warm paper, black text, headings and references in
+rubric red, and gilt for the moment you say Amen.
 
-- **Colour roles:** cool grey-green paper and ink for tool screens; a deep olive
-  ground for the moments that matter (the prayer, welcome, streak); lamp gold
-  only on olive, only as reward. No red or green.
-- **Signature:** a lamp flame. It breathes in the prayer header, glows on Amen,
-  marks the selected tab, and is the icon. `flamePath()` in `ui/Components.kt`
-  and `tools/make_icons.py` share one outline.
-- **Type:** EB Garamond (prayer, headlines, references in italic) and
-  Instrument Sans (UI). Korean falls back to the system font, upright.
+- **The page:** the prayer, the welcome screen and the streak card are framed by
+  a double red rule. The prayer page reads top to bottom like a prayer book:
+  the cross, the theme as a red rubric, the prayer with a large red initial,
+  a short red rule, the verse in italic with its reference in red small
+  capitals. After Amen a red "Amen." appears at the end of the prayer and the
+  cross turns gold.
+- **Colour roles:** paper and ink; rubric red for structure (headings,
+  references, initials, the cross, selected options); gilt only as the reward.
+- **Signature:** a Latin cross with flared ends (`crossPath()` in
+  `ui/Components.kt`, shared with `tools/make_icons.py`). The app icon is a gilt
+  cross on crimson, like a Bible cover.
+- **Type:** EB Garamond throughout, with true small capitals for rubrics.
+  Korean uses the phone's Korean font, upright.
 
 Notes are at the top of `ui/theme/Theme.kt`.
 
@@ -91,7 +103,7 @@ app/src/main/java/com/prayergate/app/
   detection/                both engines, GateController, SessionTimer, permissions
   ui/PrayerActivity.kt      the pause
   ui/                       onboarding, apps, saved, stats, settings, guide, legal, widget
-tools/                      prayer, Korean string and icon generators
+tools/                      prayer, verse, Korean string and icon generators
 docs/privacy-policy.md      hostable privacy policy (EN + KO)
 ```
 

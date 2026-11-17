@@ -322,9 +322,9 @@ private fun EngineCard(title: String, description: String, selected: Boolean, on
             Spacer(Modifier.height(3.dp))
             Text(description, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
-        // The flame marks the selected engine.
+        // The cross marks the selected engine.
         val dot by animateFloatAsState(if (selected) 1f else 0f, label = "engineDot")
-        Flame(Modifier.graphicsLayer { alpha = dot; scaleX = dot; scaleY = dot })
+        Cross(Modifier.graphicsLayer { alpha = dot; scaleX = dot; scaleY = dot }, size = 24.dp)
     }
 }
 

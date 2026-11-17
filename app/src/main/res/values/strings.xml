@@ -20,9 +20,9 @@
     <string name="onboarding_body_1">Choose the apps where your time goes. When you open one, Prayer Gate shows a short prayer first.</string>
     <string name="onboarding_body_2">Read it and hold Amen, then decide: go on to the app, or close it. Nothing is ever blocked.</string>
     <string name="onboarding_body_3">No account and no internet. Everything stays on this phone.</string>
-    <!-- One short word shown very large and pale at the top of the welcome screen.
-         Selah marks a pause in the Psalms. Keep it short. -->
-    <string name="onboarding_word">selah</string>
+    <!-- The verse on the welcome page, World English Bible. -->
+    <string name="onboarding_verse">Watch and pray, that you don’t enter into temptation.</string>
+    <string name="onboarding_verse_ref">Matthew 26:41</string>
     <string name="onboarding_next">Get started</string>
 
     <!-- Setup steps (one thing per screen) -->
@@ -68,7 +68,7 @@
     <string name="licences_title">Open-source licences</string>
     <string name="licences_intro">Prayer Gate is built with these open-source components. Tap one to read its licence.</string>
     <string name="content_t">Prayers and Scripture</string>
-    <string name="content_note">The prayers in Prayer Gate were written for this app. Each one names a Bible passage you can look up. The two short quotations from John 21:22 are from the King James Version and the Korean Revised Version (개역한글, 1961).</string>
+    <string name="content_note">The prayers in Prayer Gate were written for this app. Each one takes up the words of a Bible passage, printed under the prayer. English verses are from the World English Bible, which is in the public domain. Korean verses are from the Korean Revised Version (개역한글, 1961), whose copyright term has ended.</string>
     <string name="trademarks_t">Trademarks</string>
     <string name="trademarks">Instagram, TikTok, YouTube and other app names shown in Prayer Gate are trademarks of their owners. Prayer Gate is not affiliated with or endorsed by them.</string>
     <!-- Contact for privacy questions, e.g. an email address. Google Play expects one.

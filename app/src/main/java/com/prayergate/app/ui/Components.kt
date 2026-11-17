@@ -5,15 +5,16 @@ import androidx.compose.animation.core.Animatable
 import androidx.annotation.StringRes
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.RepeatMode
-import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
@@ -46,7 +47,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.drawscope.withTransform
+import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.rememberTextMeasurer
@@ -59,6 +60,7 @@ import androidx.compose.ui.unit.sp
 import com.prayergate.app.R
 import com.prayergate.app.data.PrayerTheme
 import com.prayergate.app.ui.theme.LocalAccent
+import com.prayergate.app.ui.theme.LocalGilt
 
 /*
  * Small building blocks shared by several screens.
@@ -121,16 +123,17 @@ fun Modifier.pressScale(interactionSource: MutableInteractionSource): Modifier {
 }
 
 /**
- * A white card lifted off the paper by a very soft shadow.
- * Cards are how PrayerGate groups things; there are no outlined boxes.
+ * A lighter sheet of paper laid on the page: a hairline edge and the
+ * faintest shadow. Cards are how Prayer Gate groups things.
  */
 @Composable
-fun Modifier.card(shape: Shape = MaterialTheme.shapes.medium, elevation: Dp = 10.dp): Modifier =
+fun Modifier.card(shape: Shape = MaterialTheme.shapes.medium, elevation: Dp = 2.dp): Modifier =
     this
-        .shadow(elevation, shape, ambientColor = Color.Black.copy(alpha = 0.10f), spotColor = Color.Black.copy(alpha = 0.10f))
+        .shadow(elevation, shape, ambientColor = Color.Black.copy(alpha = 0.08f), spotColor = Color.Black.copy(alpha = 0.08f))
         .background(MaterialTheme.colorScheme.surface, shape)
+        .border(1.dp, MaterialTheme.colorScheme.outlineVariant, shape)
 
-/** The main action on a screen: a solid ink pill. Use at most one per screen. */
+/** The main action on a screen: a solid ink button. Use at most one per screen. */
 @Composable
 fun PrimaryButton(text: String, onClick: () -> Unit, modifier: Modifier = Modifier, enabled: Boolean = true) {
     val interaction = remember { MutableInteractionSource() }
@@ -138,8 +141,8 @@ fun PrimaryButton(text: String, onClick: () -> Unit, modifier: Modifier = Modifi
         onClick = onClick,
         enabled = enabled,
         interactionSource = interaction,
-        shape = CircleShape,
-        modifier = modifier.fillMaxWidth().heightIn(min = 58.dp).pressScale(interaction),
+        shape = MaterialTheme.shapes.small,
+        modifier = modifier.fillMaxWidth().heightIn(min = 56.dp).pressScale(interaction),
     ) {
         Text(text, style = MaterialTheme.typography.labelLarge, textAlign = TextAlign.Center)
     }
@@ -151,7 +154,7 @@ fun QuietButton(text: String, onClick: () -> Unit, modifier: Modifier = Modifier
     TextButton(
         onClick = onClick,
         enabled = enabled,
-        shape = CircleShape,
+        shape = MaterialTheme.shapes.small,
         modifier = modifier.fillMaxWidth().heightIn(min = 52.dp),
     ) {
         Text(
@@ -189,12 +192,15 @@ fun koreanStyle(): TextStyle = MaterialTheme.typography.bodyMedium
 fun keepKoreanWordsTogether(text: String): String =
     text.split(' ').joinToString(" ") { word -> word.toList().joinToString("\u2060") }
 
-/** A small label in spaced capitals, e.g. "THEMES". */
+/**
+ * A rubric: a small heading in red small capitals, e.g. "THEMES", as a
+ * prayer book prints its headings.
+ */
 @Composable
 fun SectionLabel(
     text: String,
     modifier: Modifier = Modifier,
-    color: Color = MaterialTheme.colorScheme.onSurfaceVariant,
+    color: Color = LocalAccent.current.accent,
     maxLines: Int = 1,
 ) {
     Text(
@@ -222,7 +228,7 @@ fun <T> ChoiceRow(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(16.dp))
+            .clip(RoundedCornerShape(10.dp))
             .background(MaterialTheme.colorScheme.surfaceVariant)
             .padding(4.dp),
         horizontalArrangement = Arrangement.spacedBy(4.dp),
@@ -241,8 +247,8 @@ fun <T> ChoiceRow(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier
                     .weight(1f)
-                    .then(if (isSelected) Modifier.shadow(3.dp, RoundedCornerShape(12.dp)) else Modifier)
-                    .clip(RoundedCornerShape(12.dp))
+                    .then(if (isSelected) Modifier.shadow(2.dp, RoundedCornerShape(7.dp)) else Modifier)
+                    .clip(RoundedCornerShape(7.dp))
                     .background(thumb)
                     .clickable(role = Role.RadioButton) { onSelect(option) }
                     .heightIn(min = 46.dp)
@@ -255,39 +261,46 @@ fun <T> ChoiceRow(
 }
 
 /**
- * The outline of PrayerGate's flame, fitted into a box [width] wide and
- * 1.5 x [width] tall with its top-left corner at [left], [top]. The tip
- * leans to the right and the left side curves in and out like a flicker,
- * so it reads as a flame and not a drop of water. Used by [Flame] and the
- * large flame on the olive ground. tools/make_icons.py draws the launcher,
- * notification and widget icons from the same numbers: change both together.
+ * The outline of Prayer Gate's cross: a Latin cross (the lower arm is the
+ * longest) whose arms widen a little towards their ends, as crosses do in
+ * old prayer books. The long lower arm keeps it from reading as the equal-armed
+ * red cross of first aid. It fits a box [height] tall and 0.68 x [height]
+ * wide, with its top-left corner at [left], [top].
+ *
+ * tools/make_icons.py draws the launcher, notification and widget icons from
+ * the same numbers: change both together.
  */
-fun flamePath(left: Float, top: Float, width: Float): Path {
-    val w = width
-    val h = width * 1.5f
-    fun x(f: Float) = left + w * f
-    fun y(f: Float) = top + h * f
+fun crossPath(left: Float, top: Float, height: Float): Path {
+    val h = height
+    val w = h * 0.68f
+    val cx = left + w / 2
+    val cy = top + h * 0.32f      // the middle of the crossbar
+    val b = h * 0.075f            // half the thickness where the arms meet
+    val a = h * 0.115f            // half the thickness at the end of each arm
     return Path().apply {
-        moveTo(x(0.62f), y(0f))
-        cubicTo(x(0.70f), y(0.18f), x(0.92f), y(0.36f), x(0.92f), y(0.64f))
-        cubicTo(x(0.92f), y(0.86f), x(0.73f), y(1f), x(0.5f), y(1f))
-        cubicTo(x(0.27f), y(1f), x(0.08f), y(0.86f), x(0.08f), y(0.64f))
-        cubicTo(x(0.08f), y(0.46f), x(0.26f), y(0.36f), x(0.40f), y(0.24f))
-        cubicTo(x(0.50f), y(0.15f), x(0.58f), y(0.09f), x(0.62f), y(0f))
+        moveTo(cx - a, top); lineTo(cx + a, top)                 // top arm
+        lineTo(cx + b, cy - b)
+        lineTo(left + w, cy - a); lineTo(left + w, cy + a)       // right arm
+        lineTo(cx + b, cy + b)
+        lineTo(cx + a, top + h); lineTo(cx - a, top + h)         // lower arm
+        lineTo(cx - b, cy + b)
+        lineTo(left, cy + a); lineTo(left, cy - a)               // left arm
+        lineTo(cx - b, cy - b)
         close()
     }
 }
 
 /**
- * The flame: PrayerGate's signature, a small lamp kept lit.
+ * The cross: Prayer Gate's signature, in rubric red.
  *
- * With [breathing] it rises and settles slowly, like a calm breath, with a
- * soft halo. When [celebrate] becomes true (the user said Amen) it swells
- * once and a wide glow opens around it and fades.
+ * With [breathing] it fades softly in and out, like a calm breath.
+ * When [celebrate] becomes true (the user said Amen) the cross turns to gilt
+ * and a wide gold glow opens around it once and fades.
  */
 @Composable
-fun Flame(modifier: Modifier = Modifier, breathing: Boolean = false, celebrate: Boolean = false) {
-    val accent = LocalAccent.current.accent
+fun Cross(modifier: Modifier = Modifier, breathing: Boolean = false, celebrate: Boolean = false, size: Dp = 28.dp) {
+    val red = LocalAccent.current.accent
+    val gilt = LocalGilt.current
 
     // Breathing: a number that drifts between 0 and 1 forever.
     val transition = rememberInfiniteTransition(label = "breathing")
@@ -298,37 +311,24 @@ fun Flame(modifier: Modifier = Modifier, breathing: Boolean = false, celebrate: 
         label = "breath",
     )
 
-    // Celebration: the flame swells, and a glow opens around it once.
-    val swell = remember { Animatable(1f) }
+    // Celebration: the cross turns gold, and a glow opens around it once.
+    val gold = remember { Animatable(0f) }
     val glow = remember { Animatable(0f) }
     LaunchedEffect(celebrate) {
-        if (celebrate) {
-            swell.animateTo(1.45f, tween(260, easing = FastOutSlowInEasing))
-            swell.animateTo(1.15f, spring(dampingRatio = 0.6f, stiffness = Spring.StiffnessLow))
-        } else {
-            swell.snapTo(1f)
-        }
+        if (celebrate) gold.animateTo(1f, tween(500, easing = FastOutSlowInEasing)) else gold.snapTo(0f)
     }
     LaunchedEffect(celebrate) {
-        if (celebrate) glow.animateTo(1f, tween(1400, easing = FastOutSlowInEasing)) else glow.snapTo(0f)
+        if (celebrate) glow.animateTo(1f, tween(1600, easing = FastOutSlowInEasing)) else glow.snapTo(0f)
     }
 
-    Canvas(modifier.size(28.dp)) {
-        val center = Offset(size.width / 2, size.height / 2)
+    Canvas(modifier.size(size)) {
+        val center = Offset(this.size.width / 2, this.size.height / 2)
         val t = glow.value
         if (t > 0f && t < 1f) {
-            drawCircle(accent, radius = 6.dp.toPx() + 22.dp.toPx() * t, center = center, alpha = 0.35f * (1f - t))
+            drawCircle(gilt, radius = this.size.minDimension * (0.3f + 1.1f * t), center = center, alpha = 0.4f * (1f - t))
         }
-        if (breathing) {
-            // A soft halo that grows and fades with each breath.
-            drawCircle(accent, radius = 7.dp.toPx() + 4.dp.toPx() * breath, center = center, alpha = 0.16f - 0.11f * breath)
-        }
-        // The flame is drawn from its base, so it grows upwards.
-        val stretch = if (breathing) 1f + 0.06f * breath else 1f
-        val width = 10.dp.toPx() * swell.value
-        val base = center.y + 7.5.dp.toPx()
-        withTransform({ scale(1f, stretch, pivot = Offset(center.x, base)) }) {
-            drawPath(flamePath(center.x - width / 2, base - width * 1.5f, width), accent)
-        }
+        val h = this.size.minDimension * 0.78f
+        val alpha = if (breathing) 1f - 0.35f * breath else 1f
+        drawPath(crossPath(center.x - h * 0.34f, center.y - h / 2, h), lerp(red, gilt, gold.value), alpha = alpha)
     }
 }

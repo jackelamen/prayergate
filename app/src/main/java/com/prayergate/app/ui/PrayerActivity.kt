@@ -92,6 +92,16 @@ import com.prayergate.app.data.readingMillis
 import com.prayergate.app.detection.GateController
 import com.prayergate.app.ui.theme.LocalAccent
 import com.prayergate.app.ui.theme.PrayerGateTheme
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.unit.em
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.graphics.drawscope.clipRect
+import androidx.compose.foundation.layout.wrapContentHeight
+import com.prayergate.app.ui.theme.LocalGilt
+import com.prayergate.app.ui.theme.Ink
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -465,59 +475,65 @@ internal fun PrayerScreen(
         }
     }
 
-    // The deep olive ground with its large flame (see Ground.kt).
-    // Inside it, text is white and the accent is gold.
-    OliveGround(Modifier.fillMaxSize()) {
-        val softWhite = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.72f)
+    // The page: paper inside a double red rule (see Ground.kt).
+    PageGround(Modifier.fillMaxSize()) {
+        val soft = MaterialTheme.colorScheme.onSurfaceVariant
 
-        // The reward: a slow wash of lamplight that rises from the Amen button.
-        LampGlow(play = prayed, origin = glowOrigin)
+        // The reward: a slow wash of gilt light that rises from the Amen button.
+        GiltGlow(play = prayed, origin = glowOrigin)
 
-        Column(Modifier.fillMaxSize().systemBarsPadding().readableWidth(maxWidth = if (landscape) 960.dp else 560.dp).padding(horizontal = 28.dp)) {
-
-            // Top line: the breathing flame and why this screen appeared.
-            // The line has the whole width to itself and may wrap to a second
-            // line, so long app names are never cut off or squeezed.
-            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.heightIn(min = if (landscape) 44.dp else 64.dp)) {
-                Flame(breathing = !prayed, celebrate = prayed)
-                Spacer(Modifier.width(8.dp))
-                SectionLabel(header, Modifier.weight(1f), color = softWhite, maxLines = 2)
+        Column(
+            Modifier
+                .fillMaxSize()
+                .systemBarsPadding()
+                .readableWidth(maxWidth = if (landscape) 960.dp else 560.dp)
+                .padding(horizontal = 36.dp),
+        ) {
+            // Top line: why this page appeared, and the heart to keep the prayer.
+            // The label may wrap to a second line, so long app names are never cut off.
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(top = 18.dp).heightIn(min = if (landscape) 40.dp else 52.dp),
+            ) {
+                SectionLabel(header, Modifier.weight(1f), color = soft, maxLines = 2)
+                if (prayer != null) SaveHeart(saved, onToggleSaved)
             }
 
             if (landscape) {
                 // Sideways phone: the prayer on the left, Amen and the buttons on the right.
-                Row(Modifier.weight(1f), horizontalArrangement = Arrangement.spacedBy(36.dp)) {
+                // Bottom padding keeps the words inside the page frame.
+                Row(Modifier.weight(1f).padding(bottom = 22.dp), horizontalArrangement = Arrangement.spacedBy(36.dp)) {
                     Column(
                         Modifier.weight(1.3f).fillMaxHeight().verticalScroll(rememberScrollState()),
                         verticalArrangement = Arrangement.Center,
                     ) {
                         if (prayer != null) key(prayer.id) {
-                            PrayerBody(prayer, korean, prayed, saved, onToggleSaved, compact = true)
+                            PrayerBody(prayer, korean, prayed, compact = true)
                         }
                     }
                     Box(Modifier.weight(1f).fillMaxHeight(), contentAlignment = Alignment.Center) {
                         Exits(
                             prayer, prayed, onAmen, { glowOrigin = it }, primaryText, onPrimary,
-                            secondaryText, onSecondary, secondaryDelaySeconds, secondaryWaitingText, softWhite,
+                            secondaryText, onSecondary, secondaryDelaySeconds, secondaryWaitingText,
                         )
                     }
                 }
             } else {
-                // Middle: the prayer.
+                // Middle: the prayer and its verse.
                 Column(
                     modifier = Modifier.weight(1f).fillMaxWidth().verticalScroll(rememberScrollState()),
                     verticalArrangement = Arrangement.Center,
                 ) {
                     // "key" restarts the entrance animation if a new prayer arrives.
                     if (prayer != null) key(prayer.id) {
-                        PrayerBody(prayer, korean, prayed, saved, onToggleSaved, compact = false)
+                        PrayerBody(prayer, korean, prayed, compact = isTight())
                     }
                 }
                 // Bottom: Amen, then the two ways out in the same place.
                 Exits(
                     prayer, prayed, onAmen, { glowOrigin = it }, primaryText, onPrimary,
-                    secondaryText, onSecondary, secondaryDelaySeconds, secondaryWaitingText, softWhite,
-                    modifier = Modifier.padding(top = 12.dp, bottom = 12.dp),
+                    secondaryText, onSecondary, secondaryDelaySeconds, secondaryWaitingText,
+                    modifier = Modifier.padding(top = 12.dp, bottom = 20.dp),
                 )
             }
         }
@@ -525,73 +541,91 @@ internal fun PrayerScreen(
 }
 
 /**
- * The prayer itself: the theme as one large pale word (replaced by "Amen"
- * once prayed), the prayer text, and its Bible reference with the heart.
+ * The prayer, set like a page of a prayer book:
+ *
+ *   the cross, the theme as a red rubric, the prayer with a large red
+ *   initial letter, a short red rule, then the Bible verse the prayer takes
+ *   up, in italic, with its reference in red small capitals.
+ *
+ * After Amen, a red "Amen." appears at the end of the prayer, as prayer books
+ * print it, and the cross turns gold. Its space is there from the start
+ * (transparent), so nothing moves when it appears.
  */
 @Composable
-private fun PrayerBody(
-    prayer: Prayer,
-    korean: Boolean,
-    prayed: Boolean,
-    saved: Boolean,
-    onToggleSaved: () -> Unit,
-    compact: Boolean,
-) {
+private fun PrayerBody(prayer: Prayer, korean: Boolean, prayed: Boolean, compact: Boolean) {
     // Entrance: everything fades up into place, one item after another.
     var entered by remember { mutableStateOf(false) }
     LaunchedEffect(Unit) { entered = true }
-    val shortScreen = LocalConfiguration.current.screenHeightDp < 560
+    val red = LocalAccent.current.accent
+    val ink = MaterialTheme.colorScheme.onBackground
+    val amenAlpha by animateFloatAsState(if (prayed) 1f else 0f, tween(700, delayMillis = 150), label = "amen")
 
-    AnimatedContent(
-        targetState = prayed,
-        transitionSpec = { fadeIn(tween(700, delayMillis = 200)) togetherWith fadeOut(tween(300)) },
-        contentAlignment = Alignment.BottomStart,
-        label = "themeOrAmen",
-        // A fixed height, so swapping the theme word for "Amen" moves nothing.
-        // On short screens the large word is left out to make room for the prayer.
-        modifier = Modifier.fillMaxWidth().height(if (shortScreen) 48.dp else 80.dp).enterAnimation(entered, index = 0),
-    ) { isPrayed ->
-        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.BottomStart) {
-            if (isPrayed) {
-                Text(
-                    stringResource(R.string.amen_done),
-                    style = MaterialTheme.typography.headlineLarge,
-                    color = LocalAccent.current.accent,
-                    maxLines = 1,
-                )
-            } else if (!shortScreen) {
-                GhostWord(
-                    text = stringResource(themeName(prayer.theme)),
-                    fontSize = 64.sp,
-                    fitWidth = true,
-                    // Nudged left so the slanted first letter lines up with the prayer.
-                    modifier = Modifier.offset(x = (-2).dp),
-                )
-            } else {
-                SectionLabel(stringResource(themeName(prayer.theme)), color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f))
-            }
-        }
+    Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+        Cross(
+            breathing = !prayed,
+            celebrate = prayed,
+            size = if (compact) 32.dp else 44.dp,
+            modifier = Modifier.enterAnimation(entered, index = 0),
+        )
+        Spacer(Modifier.height(if (compact) 6.dp else 10.dp))
+        SectionLabel(
+            stringResource(themeName(prayer.theme)),
+            modifier = Modifier.enterAnimation(entered, index = 0),
+        )
     }
 
-    Spacer(Modifier.height(if (compact) 10.dp else 16.dp))
+    Spacer(Modifier.height(if (compact) 14.dp else 22.dp))
+    val amen = stringResource(R.string.amen_done) + "."
+    // On a small screen, with large text, or sideways, the prayer is set a
+    // little smaller so its verse still fits on the page without scrolling.
+    val prayerStyle = MaterialTheme.typography.headlineMedium.let {
+        if (compact) it.copy(fontSize = it.fontSize * 0.84f, lineHeight = it.lineHeight * 0.84f) else it
+    }
+    val text = if (korean) keepKoreanWordsTogether(prayer.textKo) else prayer.text
     Text(
-        if (korean) keepKoreanWordsTogether(prayer.textKo) else prayer.text,
-        style = MaterialTheme.typography.headlineMedium,
-        color = MaterialTheme.colorScheme.onBackground,
+        buildAnnotatedString {
+            // English prayers open with a large red initial, as in a printed
+            // prayer book. Korean has no such tradition, so it starts plainly.
+            if (!korean && text.firstOrNull()?.isLetter() == true) {
+                withStyle(SpanStyle(color = red, fontSize = 1.9.em)) { append(text.first()) }
+                append(text.drop(1))
+            } else {
+                append(text)
+            }
+            append(" ")
+            withStyle(SpanStyle(color = red.copy(alpha = amenAlpha), fontStyle = FontStyle.Italic)) {
+                append(if (korean) keepKoreanWordsTogether(amen) else amen)
+            }
+        },
+        style = prayerStyle,
+        color = ink,
         modifier = Modifier.fillMaxWidth().enterAnimation(entered, index = 1),
     )
-    Spacer(Modifier.height(if (compact) 12.dp else 18.dp))
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.fillMaxWidth().enterAnimation(entered, index = 2),
+
+    // A short red rule between the prayer and the word it answers.
+    Spacer(Modifier.height(if (compact) 14.dp else 22.dp))
+    Box(
+        Modifier
+            .fillMaxWidth()
+            .enterAnimation(entered, index = 2),
+        contentAlignment = Alignment.Center,
     ) {
+        Box(Modifier.width(44.dp).height(1.dp).background(red.copy(alpha = 0.8f)))
+    }
+    Spacer(Modifier.height(if (compact) 12.dp else 18.dp))
+
+    Column(Modifier.fillMaxWidth().enterAnimation(entered, index = 3)) {
         Text(
-            prayer.reference(korean),
-            style = MaterialTheme.typography.labelSmall,
-            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.72f),
-            modifier = Modifier.weight(1f),
+            if (korean) keepKoreanWordsTogether(prayer.verseKo) else prayer.verse,
+            style = MaterialTheme.typography.labelSmall.let {
+                if (compact) it.copy(fontSize = it.fontSize * 0.88f, lineHeight = it.lineHeight * 0.88f) else it
+            },
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
-        SaveHeart(saved, onToggleSaved)
+        SectionLabel(
+            prayer.reference(korean),
+            modifier = Modifier.align(Alignment.End).padding(top = 6.dp),
+        )
     }
 }
 
@@ -612,7 +646,6 @@ private fun Exits(
     onSecondary: () -> Unit,
     secondaryDelaySeconds: Int,
     secondaryWaitingText: @Composable (Int) -> String,
-    softWhite: Color,
     modifier: Modifier = Modifier,
 ) {
     val buttonsShown by animateFloatAsState(
@@ -648,7 +681,7 @@ private fun Exits(
             Text(
                 stringResource(R.string.prayer_hint),
                 style = MaterialTheme.typography.labelSmall,
-                color = softWhite,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(top = 10.dp),
             )
@@ -685,11 +718,11 @@ private fun Exits(
 /**
  * The Amen button.
  *
- *  1. Reading: a faint white fill crosses the button over [readMillis], so
- *     the prayer is read before it is prayed. The button does nothing yet.
- *  2. Ready: the button turns solid white and says "Hold to say Amen".
- *  3. Holding: gold fills it from the left over [HOLD_MILLIS]. Letting go
- *     early drains it back.
+ *  1. Reading: a faint ink wash crosses the button over [readMillis], so the
+ *     prayer is read before it is prayed. The button does nothing yet.
+ *  2. Ready: the button turns solid ink and says "Hold to say Amen".
+ *  3. Holding: gilt fills it from the left over [HOLD_MILLIS], and the words
+ *     turn to ink as the gold passes under them. Letting go early drains it.
  *  4. Full: [onAmen].
  *
  * Screen readers cannot hold easily, so for them a double tap counts as Amen
@@ -707,7 +740,7 @@ private fun AmenButton(readMillis: Long, enabled: Boolean, onAmen: () -> Unit, m
         reading.animateTo(1f, tween(readMillis.toInt(), easing = LinearEasing))
     }
     val ready = reading.value >= 1f
-    val gold = LocalAccent.current.accent
+    val gilt = LocalGilt.current
     val scheme = MaterialTheme.colorScheme
     val readyLabel = stringResource(R.string.amen_hold)
     val readingLabel = stringResource(R.string.amen_reading)
@@ -727,9 +760,9 @@ private fun AmenButton(readMillis: Long, enabled: Boolean, onAmen: () -> Unit, m
         contentAlignment = Alignment.Center,
         modifier = modifier
             .fillMaxWidth()
-            .height(58.dp)
-            .clip(CircleShape)
-            .background(if (ready) scheme.primary else Color.White.copy(alpha = 0.12f))
+            .height(56.dp)
+            .clip(MaterialTheme.shapes.small)
+            .background(if (ready) scheme.primary else scheme.surfaceVariant)
             .pointerInput(ready, enabled) {
                 if (!ready || !enabled) return@pointerInput
                 detectTapGestures(onPress = {
@@ -760,27 +793,37 @@ private fun AmenButton(readMillis: Long, enabled: Boolean, onAmen: () -> Unit, m
         // The fills, drawn behind the label.
         Canvas(Modifier.matchParentSize()) {
             if (!ready) {
-                drawRect(Color.White.copy(alpha = 0.16f), size = size.copy(width = size.width * reading.value))
+                drawRect(scheme.onSurface.copy(alpha = 0.10f), size = size.copy(width = size.width * reading.value))
             }
             if (hold.value > 0f) {
-                drawRect(gold, size = size.copy(width = size.width * hold.value))
+                drawRect(gilt, size = size.copy(width = size.width * hold.value))
             }
         }
-        Text(
-            label,
-            style = MaterialTheme.typography.labelLarge,
-            color = when {
-                ready -> scheme.onPrimary
-                else -> scheme.onBackground.copy(alpha = 0.75f)
-            },
-        )
+        val style = MaterialTheme.typography.labelLarge
+        Text(label, style = style, color = if (ready) scheme.onPrimary else scheme.onSurfaceVariant)
+        // The same words again in ink, shown only where the gold has reached,
+        // so the label stays readable as the gilt passes under it.
+        if (hold.value > 0f) {
+            Text(
+                label,
+                style = style,
+                color = Ink,
+                modifier = Modifier
+                    .matchParentSize()
+                    .wrapContentHeight(Alignment.CenterVertically)
+                    .drawWithContent {
+                        clipRect(right = size.width * hold.value) { this@drawWithContent.drawContent() }
+                    },
+                textAlign = TextAlign.Center,
+            )
+        }
     }
 }
 
 /** A heart outline, filled when the prayer is saved. */
 @Composable
 private fun SaveHeart(saved: Boolean, onToggle: () -> Unit) {
-    val color = MaterialTheme.colorScheme.onBackground
+    val color = LocalAccent.current.accent
     val description = stringResource(if (saved) R.string.prayer_unsave else R.string.prayer_save)
     val fill by animateFloatAsState(if (saved) 1f else 0f, tween(220), label = "heart")
     IconButton(onClick = onToggle, modifier = Modifier.semantics { contentDescription = description }) {
@@ -799,6 +842,16 @@ private fun SaveHeart(saved: Boolean, onToggle: () -> Unit) {
             drawPath(heart, color.copy(alpha = 0.85f), style = Stroke(1.6.dp.toPx()))
         }
     }
+}
+
+/**
+ * True when the page has little room for its words: a small phone, a large
+ * system font, or a phone turned sideways.
+ */
+@Composable
+private fun isTight(): Boolean {
+    val c = LocalConfiguration.current
+    return c.screenHeightDp < 700 || c.fontScale > 1.15f
 }
 
 /** True on a wide, short screen, such as a phone turned sideways. */
@@ -823,13 +876,13 @@ private fun Modifier.enterAnimation(entered: Boolean, index: Int): Modifier {
 }
 
 /**
- * A slow wash of gold lamplight that rises from [origin] (the Amen button)
- * and fades, once, when [play] becomes true. With the flame's glow and the
- * buzz, this is the whole celebration: calm, no confetti.
+ * A slow wash of gilt light that rises from [origin] (the Amen button) and
+ * fades, once, when [play] becomes true. With the cross turning gold, the red
+ * "Amen." and the buzz, this is the whole celebration: calm, no confetti.
  */
 @Composable
-private fun LampGlow(play: Boolean, origin: Offset) {
-    val gold = LocalAccent.current.accent
+private fun GiltGlow(play: Boolean, origin: Offset) {
+    val gold = LocalGilt.current
     val progress = remember { Animatable(0f) }
     LaunchedEffect(play) {
         if (play) progress.animateTo(1f, tween(1600, easing = FastOutSlowInEasing)) else progress.snapTo(0f)
@@ -839,7 +892,7 @@ private fun LampGlow(play: Boolean, origin: Offset) {
         if (t <= 0f || t >= 1f) return@Canvas
         val radius = size.height * 0.9f * t
         val fade = 1f - t
-        drawCircle(gold, radius = radius, center = origin, alpha = 0.14f * fade)
+        drawCircle(gold, radius = radius, center = origin, alpha = 0.18f * fade)
         drawCircle(gold, radius = radius * 0.6f, center = origin, alpha = 0.10f * fade)
     }
 }

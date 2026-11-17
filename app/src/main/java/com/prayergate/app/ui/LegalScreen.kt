@@ -59,7 +59,6 @@ private data class Component(val name: String, val owner: String, val licence: S
 
 private val COMPONENTS = listOf(
     Component("EB Garamond (font)", "The EB Garamond Project Authors", "SIL Open Font License 1.1", "ofl-eb-garamond.txt"),
-    Component("Instrument Sans (font)", "The Instrument Sans Project Authors", "SIL Open Font License 1.1", "ofl-instrument-sans.txt"),
     Component("Jetpack Compose, Material 3", "The Android Open Source Project", "Apache License 2.0", "apache-2.0.txt"),
     Component("AndroidX Core, Activity, Lifecycle, Room", "The Android Open Source Project", "Apache License 2.0", "apache-2.0.txt"),
     Component("Kotlin, kotlinx.coroutines", "JetBrains s.r.o. and contributors", "Apache License 2.0", "apache-2.0.txt"),

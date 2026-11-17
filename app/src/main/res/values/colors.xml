@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Only colors needed outside Compose live here. See ui/theme/Theme.kt for the full palette. -->
-    <color name="window_background">#F2F3EF</color>
-    <color name="olive">#2C3D25</color>
+    <color name="window_background">#F3ECDF</color>
+    <!-- The launcher icon ground: deep crimson, like a Bible cover. -->
+    <color name="icon_ground">#7E1A15</color>
 </resources>

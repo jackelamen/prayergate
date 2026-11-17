@@ -142,8 +142,8 @@ private fun PermissionRow(title: String, reason: String, granted: Boolean, onAll
         }
         Spacer(Modifier.width(12.dp))
         if (granted) {
-            // Done: the flame and the word, so colour is not the only signal.
-            Flame()
+            // Done: the cross and the word, so colour is not the only signal.
+            Cross(size = 22.dp)
             SectionLabel(stringResource(R.string.perm_done), color = accent, modifier = Modifier.padding(end = 8.dp))
         } else {
             OutlinedButton(

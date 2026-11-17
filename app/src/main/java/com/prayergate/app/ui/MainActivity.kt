@@ -219,8 +219,8 @@ private fun TabButton(text: String, selected: Boolean, modifier: Modifier, onCli
         if (selected) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurfaceVariant,
         label = "tabColor",
     )
-    // The selected tab is marked by a small flame that grows from nothing.
-    val flame by animateFloatAsState(if (selected) 1f else 0f, label = "tabFlame")
+    // The selected tab is marked by a small red cross that grows from nothing.
+    val mark by animateFloatAsState(if (selected) 1f else 0f, label = "tabCross")
     val accent = LocalAccent.current.accent
 
     Column(
@@ -231,10 +231,10 @@ private fun TabButton(text: String, selected: Boolean, modifier: Modifier, onCli
     ) {
         FitText(text.uppercase(), MaterialTheme.typography.labelMedium, color, minFontSize = 8.sp)
         Spacer(Modifier.height(7.dp))
-        Canvas(Modifier.size(width = 6.dp, height = 9.dp)) {
-            if (flame > 0f) {
-                val width = size.width * flame
-                drawPath(flamePath((size.width - width) / 2, size.height - width * 1.5f, width), accent)
+        Canvas(Modifier.size(width = 8.dp, height = 11.dp)) {
+            if (mark > 0f) {
+                val height = size.height * mark
+                drawPath(crossPath((size.width - height * 0.68f) / 2, size.height - height, height), accent)
             }
         }
     }

@@ -18,9 +18,12 @@ data class Prayer(
     val textKo: String,          // Korean
     val reference: String,       // "Matthew 26:41"
     val referenceKo: String,     // "마태복음 26:41"
+    val verse: String,           // the words of that passage, World English Bible
+    val verseKo: String,         // the same passage, 개역한글 (1961)
 ) {
     fun text(korean: Boolean) = if (korean) textKo else text
     fun reference(korean: Boolean) = if (korean) referenceKo else reference
+    fun verse(korean: Boolean) = if (korean) verseKo else verse
 }
 
 /** Turns the text of prayers.json into a list of [Prayer] objects. */
@@ -35,6 +38,8 @@ fun parsePrayers(json: String): List<Prayer> {
             textKo = item.getString("textKo"),
             reference = item.getString("reference"),
             referenceKo = item.getString("referenceKo"),
+            verse = item.getString("verse"),
+            verseKo = item.getString("verseKo"),
         )
     }
 }

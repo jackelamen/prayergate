@@ -16,6 +16,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -76,7 +77,7 @@ fun SavedScreen() {
     }
 }
 
-/** One saved prayer: its theme, the prayer and its reference. */
+/** One saved prayer: its theme, the prayer, and the verse it takes up. */
 @Composable
 private fun SavedCard(prayer: Prayer, korean: Boolean, modifier: Modifier = Modifier, onClick: () -> Unit) {
     Column(
@@ -93,11 +94,12 @@ private fun SavedCard(prayer: Prayer, korean: Boolean, modifier: Modifier = Modi
             style = MaterialTheme.typography.titleLarge,
             color = MaterialTheme.colorScheme.onSurface,
         )
-        Spacer(Modifier.height(8.dp))
+        Spacer(Modifier.height(10.dp))
         Text(
-            prayer.reference(korean),
-            style = MaterialTheme.typography.labelSmall,
+            if (korean) keepKoreanWordsTogether(prayer.verseKo) else prayer.verse,
+            style = MaterialTheme.typography.labelSmall.copy(fontSize = MaterialTheme.typography.labelSmall.fontSize * 0.9f),
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
+        SectionLabel(prayer.reference(korean), modifier = Modifier.align(Alignment.End).padding(top = 4.dp))
     }
 }

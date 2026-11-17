@@ -47,6 +47,7 @@ class LogicTest {
             assertTrue("has Korean: ${p.id}", p.textKo.isNotBlank() && p.referenceKo.isNotBlank())
             assertTrue("has a reference: ${p.id}", Regex("""\d+:\d+""").containsMatchIn(p.reference))
             assertTrue("no em dash: ${p.id}", '—' !in p.text && '—' !in p.textKo)
+            assertTrue("has the verse's words: ${p.id}", p.verse.length > 20 && p.verseKo.length > 10)
         }
     }
 
