@@ -42,6 +42,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.ui.text.rememberTextMeasurer
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.runtime.remember
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.prayergate.app.R
@@ -204,18 +210,45 @@ private fun HomeScreen(
                 .background(MaterialTheme.colorScheme.background)
                 .navigationBarsPadding(),
         ) {
-            Row(Modifier.readableWidth()) {
-                TabButton(stringResource(R.string.tab_apps), tab == Tab.APPS, Modifier.weight(1f)) { onTabChange(Tab.APPS) }
-                TabButton(stringResource(R.string.tab_saved), tab == Tab.SAVED, Modifier.weight(1f)) { onTabChange(Tab.SAVED) }
-                TabButton(stringResource(R.string.tab_stats), tab == Tab.STATS, Modifier.weight(1f)) { onTabChange(Tab.STATS) }
-                TabButton(stringResource(R.string.tab_settings), tab == Tab.SETTINGS, Modifier.weight(1f)) { onTabChange(Tab.SETTINGS) }
+            // All four labels share one size: the largest (up to 13 sp) at which the
+            // longest label still fits its quarter of the bar with room to spare.
+            // Fitting each label on its own would shrink only "SETTINGS".
+            BoxWithConstraints(Modifier.readableWidth().padding(horizontal = 4.dp)) {
+                val labels = listOf(
+                    stringResource(R.string.tab_apps), stringResource(R.string.tab_saved),
+                    stringResource(R.string.tab_stats), stringResource(R.string.tab_settings),
+                ).map { it.uppercase() }
+                val base = MaterialTheme.typography.labelMedium.copy(
+                    fontSize = 13.sp,
+                    letterSpacing = if (isKoreanShown()) 0.2.sp else 0.8.sp,
+                )
+                val measurer = rememberTextMeasurer()
+                val roomPx = with(LocalDensity.current) { (maxWidth / 4 - 16.dp).toPx() }
+                val size = remember(labels, roomPx, base) {
+                    var candidate = base.fontSize.value
+                    while (candidate > 8f) {
+                        val widest = labels.maxOf {
+                            measurer.measure(it, base.copy(fontSize = candidate.sp), maxLines = 1, softWrap = false).size.width
+                        }
+                        if (widest <= roomPx) break
+                        candidate -= 0.5f
+                    }
+                    candidate
+                }
+                val style = base.copy(fontSize = size.sp)
+                Row {
+                    TabButton(labels[0], tab == Tab.APPS, style, Modifier.weight(1f)) { onTabChange(Tab.APPS) }
+                    TabButton(labels[1], tab == Tab.SAVED, style, Modifier.weight(1f)) { onTabChange(Tab.SAVED) }
+                    TabButton(labels[2], tab == Tab.STATS, style, Modifier.weight(1f)) { onTabChange(Tab.STATS) }
+                    TabButton(labels[3], tab == Tab.SETTINGS, style, Modifier.weight(1f)) { onTabChange(Tab.SETTINGS) }
+                }
             }
         }
     }
 }
 
 @Composable
-private fun TabButton(text: String, selected: Boolean, modifier: Modifier, onClick: () -> Unit) {
+private fun TabButton(text: String, selected: Boolean, style: TextStyle, modifier: Modifier, onClick: () -> Unit) {
     val color by animateColorAsState(
         if (selected) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurfaceVariant,
         label = "tabColor",
@@ -230,7 +263,9 @@ private fun TabButton(text: String, selected: Boolean, modifier: Modifier, onCli
             .clickable(role = Role.Tab, onClick = onClick)
             .padding(top = 18.dp, bottom = 12.dp),
     ) {
-        FitText(text.uppercase(), MaterialTheme.typography.labelMedium, color, minFontSize = 8.sp)
+        // The tab labels are smaller than the red headings on the pages (the
+        // size is worked out once for all four, see HomeScreen).
+        Text(text, style = style, color = color, maxLines = 1, softWrap = false, textAlign = TextAlign.Center)
         Spacer(Modifier.height(7.dp))
         Canvas(Modifier.size(width = 8.dp, height = 11.dp)) {
             if (mark > 0f) {
