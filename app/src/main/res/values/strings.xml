@@ -127,6 +127,8 @@
     <string name="manual_reset">Settings > Reset Prayer Gate deletes all records and settings and starts setup again. Permissions you allowed stay on, so setup skips those steps.</string>
     <string name="manual_privacy_t">Privacy</string>
     <string name="manual_privacy">Prayer Gate has no account and no internet access. Your chosen apps, prayer history and saved prayers stay on this phone. Uninstalling Prayer Gate deletes all of it.</string>
+    <string name="manual_appearance_t">Light and dark</string>
+    <string name="manual_appearance">Prayer Gate follows your phone\'s light or dark setting. To always use light pages or always use dark ones, go to Settings > Appearance and choose Light or Dark. Choose Phone default to follow your phone again. The widget stays light.</string>
     <string name="manual_language_t">Language</string>
     <string name="manual_language">Prayer Gate starts in your phone\'s language, Korean or English. To use the other one, go to Settings > Language, or tap English or 한국어 at the top of the welcome screen. The prayers, the widget and the notification change with it. Choose Phone default to follow your phone again.</string>
 
@@ -238,6 +240,10 @@
     <string name="settings_language" translatable="false">Language · 언어</string>
     <string name="settings_language_hint">Changes the whole app and the widget.</string>
     <string name="lang_system">Phone default</string>
+    <string name="settings_appearance">Appearance</string>
+    <string name="appearance_system">Phone default</string>
+    <string name="appearance_light">Light</string>
+    <string name="appearance_dark">Dark</string>
     <!-- Language names are always written in their own language. -->
     <string name="lang_english" translatable="false">English</string>
     <string name="lang_korean" translatable="false">한국어</string>

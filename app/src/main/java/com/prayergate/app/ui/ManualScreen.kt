@@ -42,6 +42,7 @@ private val SECTIONS = listOf(
     R.string.manual_reset_t to R.string.manual_reset,
     R.string.manual_privacy_t to R.string.manual_privacy,
     R.string.manual_language_t to R.string.manual_language,
+    R.string.manual_appearance_t to R.string.manual_appearance,
 )
 
 @Composable

@@ -136,6 +136,8 @@
     <string name="manual_reset">설정 > Prayer Gate 초기화를 누르면 모든 기록과 설정이 삭제되고 처음 설정부터 다시 시작해요. 허용한 권한은 그대로 유지되어 해당 단계는 건너뛰어요.</string>
     <string name="manual_privacy_t">개인정보</string>
     <string name="manual_privacy">Prayer Gate는 계정이 없고 인터넷을 사용하지 않아요. 선택한 앱, 기도 기록, 저장한 기도문은 모두 이 휴대폰에만 저장돼요. Prayer Gate를 삭제하면 모든 데이터가 함께 삭제돼요.</string>
+    <string name="manual_appearance_t">라이트 모드와 다크 모드</string>
+    <string name="manual_appearance">Prayer Gate는 휴대폰의 라이트 모드 또는 다크 모드 설정을 따라요. 항상 밝은 화면이나 항상 어두운 화면을 쓰려면 설정 > 화면 모드에서 라이트 또는 다크를 고르세요. \'기기 설정\'을 고르면 다시 휴대폰 설정을 따라요. 위젯은 항상 밝은 화면이에요.</string>
     <string name="manual_language_t">언어</string>
     <string name="manual_language">Prayer Gate는 처음에 휴대폰 언어(한국어 또는 영어)로 표시돼요. 다른 언어를 쓰려면 설정 > 언어에서 바꾸거나, 시작 화면 위쪽의 English 또는 한국어를 탭하세요. 기도문, 위젯, 알림도 함께 바뀌어요. \'기기 설정\'을 고르면 다시 휴대폰 언어를 따라요.</string>
 
@@ -242,6 +244,10 @@
     <string name="settings_title">설정</string>
     <string name="settings_language_hint">앱 전체와 위젯의 언어가 바뀌어요.</string>
     <string name="lang_system">기기 설정</string>
+    <string name="settings_appearance">화면 모드</string>
+    <string name="appearance_system">기기 설정</string>
+    <string name="appearance_light">라이트</string>
+    <string name="appearance_dark">다크</string>
     <string name="settings_themes">주제</string>
     <string name="settings_themes_hint">고른 주제에서 기도문이 나와요. 최소 한 가지는 켜져 있어야 해요.</string>
     <string name="settings_cooldown">재알림 대기 시간</string>

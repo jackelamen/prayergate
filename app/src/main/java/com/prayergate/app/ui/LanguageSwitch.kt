@@ -23,6 +23,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import com.prayergate.app.R
+import com.prayergate.app.data.AppAppearance
 import com.prayergate.app.data.AppLanguage
 
 /** The Activity behind a Compose [Context], or null. */
@@ -44,6 +45,21 @@ fun rememberLanguageSetter(): (AppLanguage) -> Unit {
         if (language != AppLanguage.saved(context)) {
             AppLanguage.save(context, language)
             PrayerGateWidget.refresh(context)
+            context.findActivity()?.recreate()
+        }
+    }
+}
+
+/**
+ * Saves light, dark or "follow the phone" and redraws the screen in it,
+ * keeping the screen you were on.
+ */
+@Composable
+fun rememberAppearanceSetter(): (AppAppearance) -> Unit {
+    val context = LocalContext.current
+    return { appearance ->
+        if (appearance != AppAppearance.saved(context)) {
+            AppAppearance.save(context, appearance)
             context.findActivity()?.recreate()
         }
     }

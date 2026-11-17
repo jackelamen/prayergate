@@ -89,6 +89,12 @@ both activities in `attachBaseContext`, and also used for the widget and the
 Engine A notification, which the system would otherwise draw in the phone's
 language. Reset keeps the language choice.
 
+Light and dark work the same way: Settings > Appearance (Phone default, Light,
+Dark), saved as `AppAppearance` and applied with the language in
+`attachBaseContext` (`AppAppearance.wrapScreen`). It sets the configuration's
+night mode, so the theme, the system bar icons and the window background all
+follow it. The widget stays light.
+
 All UI text is in `res/values/strings.xml`. Korean is written in
 `tools/strings_ko_source.xml` and generated with `python3 tools/make_strings_ko.py`,
 which fails if any string is missing and glues Hangul syllables with U+2060 so

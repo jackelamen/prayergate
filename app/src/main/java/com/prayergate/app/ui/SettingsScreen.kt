@@ -49,6 +49,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import com.prayergate.app.R
 import com.prayergate.app.PrayerGateApp
+import com.prayergate.app.data.AppAppearance
 import com.prayergate.app.data.AppLanguage
 import com.prayergate.app.data.AppReset
 import com.prayergate.app.data.PrayerTheme
@@ -115,6 +116,26 @@ fun SettingsScreen(
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.padding(top = 10.dp),
+        )
+
+        // --- Appearance: light or dark pages ---
+        Spacer(Modifier.height(32.dp))
+        SectionLabel(stringResource(R.string.settings_appearance))
+        Spacer(Modifier.height(12.dp))
+        val setAppearance = rememberAppearanceSetter()
+        ChoiceRow(
+            options = AppAppearance.entries,
+            selected = AppAppearance.saved(context),
+            label = {
+                stringResource(
+                    when (it) {
+                        AppAppearance.SYSTEM -> R.string.appearance_system
+                        AppAppearance.LIGHT -> R.string.appearance_light
+                        AppAppearance.DARK -> R.string.appearance_dark
+                    }
+                )
+            },
+            onSelect = setAppearance,
         )
 
         // --- Themes ---

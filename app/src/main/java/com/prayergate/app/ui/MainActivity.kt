@@ -45,6 +45,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.prayergate.app.R
+import com.prayergate.app.data.AppAppearance
 import com.prayergate.app.data.AppLanguage
 import com.prayergate.app.PrayerGateApp
 import com.prayergate.app.detection.Engines
@@ -58,9 +59,9 @@ import com.prayergate.app.ui.theme.PrayerGateTheme
  */
 class MainActivity : ComponentActivity() {
 
-    /** Gives this screen the language chosen in Settings (see AppLanguage). */
+    /** Gives this screen the language and light/dark mode chosen in Settings. */
     override fun attachBaseContext(newBase: Context) {
-        super.attachBaseContext(AppLanguage.wrap(newBase))
+        super.attachBaseContext(AppAppearance.wrapScreen(newBase))
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

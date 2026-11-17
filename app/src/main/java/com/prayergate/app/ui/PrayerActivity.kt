@@ -80,6 +80,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import com.prayergate.app.PrayerGateApp
 import com.prayergate.app.R
+import com.prayergate.app.data.AppAppearance
 import com.prayergate.app.data.AppLanguage
 import com.prayergate.app.data.Engine
 import com.prayergate.app.data.Prayer
@@ -120,9 +121,9 @@ class PrayerActivity : ComponentActivity() {
 
     private val app get() = application as PrayerGateApp
 
-    /** Gives this screen the language chosen in Settings (see AppLanguage). */
+    /** Gives this screen the language and light/dark mode chosen in Settings. */
     override fun attachBaseContext(newBase: Context) {
-        super.attachBaseContext(AppLanguage.wrap(newBase))
+        super.attachBaseContext(AppAppearance.wrapScreen(newBase))
     }
 
     // What triggered this screen (read from the Intent).
