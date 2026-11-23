@@ -48,6 +48,19 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.runtime.remember
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.StrokeJoin
+import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.selected
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.prayergate.app.R
@@ -202,76 +215,137 @@ private fun HomeScreen(
             }
         }
 
-        // The bottom bar: four words, no icons to decode.
+        // The bottom bar: four equal columns, each an icon over a word. The icons are
+        // all the same size, so the columns look evenly spaced however long the words
+        // are, and the four words share one size (see tabLabelStyle).
         HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
-        Row(
+        BoxWithConstraints(
             Modifier
                 .fillMaxWidth()
                 .background(MaterialTheme.colorScheme.background)
                 .navigationBarsPadding(),
         ) {
-            // All four labels share one size: the largest (up to 13 sp) at which the
-            // longest label still fits its quarter of the bar with room to spare.
-            // Fitting each label on its own would shrink only "SETTINGS".
-            BoxWithConstraints(Modifier.readableWidth().padding(horizontal = 4.dp)) {
-                val labels = listOf(
-                    stringResource(R.string.tab_apps), stringResource(R.string.tab_saved),
-                    stringResource(R.string.tab_stats), stringResource(R.string.tab_settings),
-                ).map { it.uppercase() }
-                val base = MaterialTheme.typography.labelMedium.copy(
-                    fontSize = 13.sp,
-                    letterSpacing = if (isKoreanShown()) 0.2.sp else 0.8.sp,
-                )
-                val measurer = rememberTextMeasurer()
-                val roomPx = with(LocalDensity.current) { (maxWidth / 4 - 16.dp).toPx() }
-                val size = remember(labels, roomPx, base) {
-                    var candidate = base.fontSize.value
-                    while (candidate > 8f) {
-                        val widest = labels.maxOf {
-                            measurer.measure(it, base.copy(fontSize = candidate.sp), maxLines = 1, softWrap = false).size.width
-                        }
-                        if (widest <= roomPx) break
-                        candidate -= 0.5f
-                    }
-                    candidate
-                }
-                val style = base.copy(fontSize = size.sp)
-                Row {
-                    TabButton(labels[0], tab == Tab.APPS, style, Modifier.weight(1f)) { onTabChange(Tab.APPS) }
-                    TabButton(labels[1], tab == Tab.SAVED, style, Modifier.weight(1f)) { onTabChange(Tab.SAVED) }
-                    TabButton(labels[2], tab == Tab.STATS, style, Modifier.weight(1f)) { onTabChange(Tab.STATS) }
-                    TabButton(labels[3], tab == Tab.SETTINGS, style, Modifier.weight(1f)) { onTabChange(Tab.SETTINGS) }
+            val tabs = listOf(
+                Triple(Tab.APPS, TabIcon.APPS, stringResource(R.string.tab_apps)),
+                Triple(Tab.SAVED, TabIcon.SAVED, stringResource(R.string.tab_saved)),
+                Triple(Tab.STATS, TabIcon.STATS, stringResource(R.string.tab_stats)),
+                Triple(Tab.SETTINGS, TabIcon.SETTINGS, stringResource(R.string.tab_settings)),
+            )
+            val barWidth = minOf(maxWidth, 560.dp)
+            val label = tabLabelStyle(tabs.map { it.third.uppercase() }, barWidth / tabs.size - 8.dp)
+            Row(Modifier.readableWidth()) {
+                for ((value, icon, text) in tabs) {
+                    TabButton(text.uppercase(), text, icon, label, tab == value, Modifier.weight(1f)) { onTabChange(value) }
                 }
             }
         }
     }
 }
 
+/**
+ * One text style for all four tab words: the normal size, or, if the longest
+ * word would not fit its column (a narrow screen, large text), the same smaller
+ * size for every word, so the bar never looks uneven. The words are set in red
+ * small capitals like the headings on the pages, a little smaller.
+ */
 @Composable
-private fun TabButton(text: String, selected: Boolean, style: TextStyle, modifier: Modifier, onClick: () -> Unit) {
+private fun tabLabelStyle(labels: List<String>, columnWidth: Dp): TextStyle {
+    val measurer = rememberTextMeasurer()
+    val density = LocalDensity.current
+    val base = MaterialTheme.typography.labelMedium.copy(
+        fontSize = 13.sp,
+        letterSpacing = if (isKoreanShown()) 0.2.sp else 0.8.sp,
+    )
+    return remember(labels, columnWidth, base, density) {
+        val available = with(density) { columnWidth.toPx() }
+        val widest = labels.maxOf { measurer.measure(it, base, maxLines = 1, softWrap = false).size.width }
+        if (widest <= available) base else base.copy(fontSize = (13f * available / widest).coerceAtLeast(9f).sp)
+    }
+}
+
+/** The four icons, drawn as fine rounded lines, like the rules of a printed page. */
+private enum class TabIcon { APPS, SAVED, STATS, SETTINGS }
+
+/**
+ * One tab: an icon over its word. The selected tab turns rubric red and a soft
+ * red pill grows behind its icon.
+ *
+ * @param label the word as shown (capitals, for the small-capitals style).
+ * @param description the word as a screen reader should say it.
+ */
+@Composable
+private fun TabButton(
+    label: String,
+    description: String,
+    icon: TabIcon,
+    style: TextStyle,
+    selected: Boolean,
+    modifier: Modifier,
+    onClick: () -> Unit,
+) {
+    val accent = LocalAccent.current.accent
     val color by animateColorAsState(
-        if (selected) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurfaceVariant,
+        if (selected) accent else MaterialTheme.colorScheme.onSurfaceVariant,
         label = "tabColor",
     )
-    // The selected tab is marked by a small red cross that grows from nothing.
-    val mark by animateFloatAsState(if (selected) 1f else 0f, label = "tabCross")
-    val accent = LocalAccent.current.accent
+    val pill by animateFloatAsState(if (selected) 1f else 0f, label = "tabPill")
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
             .clickable(role = Role.Tab, onClick = onClick)
-            .padding(top = 18.dp, bottom = 12.dp),
+            .padding(top = 8.dp, bottom = 8.dp)
+            .semantics { contentDescription = description; this.selected = selected },
     ) {
-        // The tab labels are smaller than the red headings on the pages (the
-        // size is worked out once for all four, see HomeScreen).
-        Text(text, style = style, color = color, maxLines = 1, softWrap = false, textAlign = TextAlign.Center)
-        Spacer(Modifier.height(7.dp))
-        Canvas(Modifier.size(width = 8.dp, height = 11.dp)) {
-            if (mark > 0f) {
-                val height = size.height * mark
-                drawPath(crossPath((size.width - height * 0.68f) / 2, size.height - height, height), accent)
-            }
+        Box(contentAlignment = Alignment.Center, modifier = Modifier.size(width = 56.dp, height = 32.dp)) {
+            Box(
+                Modifier
+                    .size(width = 56.dp * pill, height = 32.dp)
+                    .background(accent.copy(alpha = 0.13f * pill), MaterialTheme.shapes.large),
+            )
+            Canvas(Modifier.size(24.dp)) { drawTabIcon(icon, color) }
+        }
+        Spacer(Modifier.height(4.dp))
+        Text(
+            label,
+            style = style,
+            color = color,
+            maxLines = 1,
+            softWrap = false,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.fillMaxWidth(),
+        )
+    }
+}
+
+/** Draws [icon] in a 24 by 24 box with a 1.8 dp rounded line. */
+private fun DrawScope.drawTabIcon(icon: TabIcon, color: Color) {
+    val u = size.width / 24f
+    val line = Stroke(width = 1.8.dp.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round)
+    fun p(x: Float, y: Float) = Offset(x * u, y * u)
+    when (icon) {
+        // Four rounded tiles: your apps.
+        TabIcon.APPS -> for ((x, y) in listOf(4f to 4f, 13.5f to 4f, 4f to 13.5f, 13.5f to 13.5f)) {
+            drawRoundRect(color, p(x, y), Size(6.5f * u, 6.5f * u), CornerRadius(2f * u), style = line)
+        }
+        // A bookmark ribbon with a swallow-tail, as in a prayer book: the prayers you kept.
+        TabIcon.SAVED -> drawPath(
+            Path().apply {
+                moveTo(7f * u, 3.5f * u); lineTo(17f * u, 3.5f * u); lineTo(17f * u, 20.5f * u)
+                lineTo(12f * u, 16f * u); lineTo(7f * u, 20.5f * u); close()
+            },
+            color, style = line,
+        )
+        // Three bars of different heights: the week.
+        TabIcon.STATS -> {
+            drawLine(color, p(5f, 20f), p(5f, 13f), line.width, StrokeCap.Round)
+            drawLine(color, p(12f, 20f), p(12f, 4f), line.width, StrokeCap.Round)
+            drawLine(color, p(19f, 20f), p(19f, 9f), line.width, StrokeCap.Round)
+        }
+        // Three sliders.
+        TabIcon.SETTINGS -> for ((y, knob) in listOf(6f to 15f, 12f to 8f, 18f to 16f)) {
+            drawLine(color, p(3.5f, y), p(20.5f, y), line.width, StrokeCap.Round)
+            drawCircle(color, 2.6f * u, p(knob, y), style = line)
         }
     }
 }
